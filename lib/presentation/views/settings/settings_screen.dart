@@ -20,194 +20,188 @@ class SettingsScreen extends StatelessWidget {
     final pinnedNotes = notesController.allNotes.where((n) => n.isPinned).length;
 
     return Scaffold(
+      backgroundColor: isDark ? AppColors.darkBg : AppColors.lightBg,
       appBar: AppBar(
-        title: const Text('Configurações & Sobre'),
+        title: const Text('Ajustes & Sobre'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         children: [
-          // Theme Section
-          _buildSectionHeader('APARÊNCIA', isDark),
-          const SizedBox(height: 8),
-          Container(
-            decoration: _boxDecoration(isDark),
-            child: SwitchListTile(
-              secondary: Icon(
-                themeController.isDarkMode ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
-                color: AppColors.primary,
-              ),
-              title: const Text('Modo Escuro (Dark Mode)'),
-              subtitle: Text(
-                themeController.isDarkMode ? 'Tema escuro ativado' : 'Tema claro ativado',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+          // iOS Group: Aparência
+          _buildGroupHeader('APARÊNCIA'),
+          const SizedBox(height: 6),
+          _buildGroupCard(
+            isDark,
+            [
+              SwitchListTile(
+                secondary: _buildLeadingIcon(
+                  themeController.isDarkMode ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                  AppColors.iosPurple,
                 ),
+                title: const Text('Modo Escuro (Dark Mode)', style: TextStyle(fontSize: 15)),
+                value: themeController.isDarkMode,
+                activeColor: AppColors.primary,
+                onChanged: (_) => themeController.toggleTheme(),
               ),
-              value: themeController.isDarkMode,
-              activeColor: AppColors.primary,
-              onChanged: (_) => themeController.toggleTheme(),
-            ),
+            ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
 
-          // Storage & Stats Section
-          _buildSectionHeader('ARMAZENAMENTO LOCAL', isDark),
-          const SizedBox(height: 8),
-          Container(
-            decoration: _boxDecoration(isDark),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                _buildStatRow('Motor de Persistência', 'Hive NoSQL (100% Local)', isDark),
-                const Divider(height: 20),
-                _buildStatRow('Total de Notas', '$totalNotes', isDark),
-                const Divider(height: 20),
-                _buildStatRow('Notas Fixadas', '$pinnedNotes', isDark),
-              ],
-            ),
+          // iOS Group: Armazenamento Local
+          _buildGroupHeader('ARMAZENAMENTO LOCAL'),
+          const SizedBox(height: 6),
+          _buildGroupCard(
+            isDark,
+            [
+              _buildInfoRow('Motor de Banco', 'Hive NoSQL (100% Offline)', isDark),
+              _buildDivider(isDark),
+              _buildInfoRow('Total de Notas', '$totalNotes', isDark),
+              _buildDivider(isDark),
+              _buildInfoRow('Notas Fixadas', '$pinnedNotes', isDark),
+            ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
 
-          // Data Management
-          _buildSectionHeader('GERENCIAMENTO DE DADOS', isDark),
-          const SizedBox(height: 8),
-          Container(
-            decoration: _boxDecoration(isDark),
-            child: ListTile(
-              leading: const Icon(Icons.delete_sweep_rounded, color: AppColors.error),
-              title: const Text(
-                'Limpar Todas as Notas',
-                style: TextStyle(color: AppColors.error, fontWeight: FontWeight.w600),
-              ),
-              subtitle: Text(
-                'Remove permanentemente todas as notas salvas localmente.',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+          // iOS Group: Gerenciamento de Dados
+          _buildGroupHeader('GERENCIAMENTO'),
+          const SizedBox(height: 6),
+          _buildGroupCard(
+            isDark,
+            [
+              ListTile(
+                leading: _buildLeadingIcon(Icons.delete_sweep_rounded, AppColors.iosRed),
+                title: const Text(
+                  'Apagar Todas as Notas',
+                  style: TextStyle(fontSize: 15, color: AppColors.iosRed, fontWeight: FontWeight.w500),
                 ),
+                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 13, color: Color(0xFFC7C7CC)),
+                onTap: () {
+                  ConfirmationDialog.show(
+                    context,
+                    title: 'Apagar Tudo?',
+                    message: 'Tem certeza que deseja apagar todas as notas salvas no seu aparelho?',
+                    confirmText: 'Apagar Tudo',
+                    onConfirm: () async {
+                      await notesController.clearAllNotes();
+                      if (context.mounted) {
+                        CustomSnackBar.show(context, message: 'Todas as notas foram apagadas.');
+                      }
+                    },
+                  );
+                },
               ),
-              onTap: () {
-                ConfirmationDialog.show(
-                  context,
-                  title: 'Apagar Tudo?',
-                  message: 'Tem certeza que deseja apagar todas as notas do dispositivo? Esta ação é irreversível.',
-                  confirmText: 'Apagar Tudo',
-                  onConfirm: () async {
-                    await notesController.clearAllNotes();
-                    if (context.mounted) {
-                      CustomSnackBar.show(context, message: 'Todas as notas foram apagadas.');
-                    }
-                  },
-                );
-              },
-            ),
+            ],
           ),
 
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
 
-          // About Card
-          _buildSectionHeader('SOBRE O NOTAIA', isDark),
-          const SizedBox(height: 8),
-          Container(
-            decoration: _boxDecoration(isDark),
-            padding: const EdgeInsets.all(18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+          // iOS Group: Sobre o NotaIA
+          _buildGroupHeader('SOBRE'),
+          const SizedBox(height: 6),
+          _buildGroupCard(
+            isDark,
+            [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(10),
+                      width: 48,
+                      height: 48,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [AppColors.primary, AppColors.secondary],
+                          colors: [AppColors.primary, AppColors.iosOrange],
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(Icons.auto_awesome, color: Colors.white, size: 24),
                     ),
                     const SizedBox(width: 14),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppStrings.appName,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-                          ),
-                        ),
-                        const Text(
-                          'Versão 1.0.0 • Docker & Flutter Web Ready',
-                          style: TextStyle(fontSize: 12, color: AppColors.primaryLight),
-                        ),
-                      ],
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('NotaIA', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 2),
+                          Text('Versão 1.0.0 • Apple Notes Style', style: TextStyle(fontSize: 12.5, color: Color(0xFF8E8E93))),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 14),
-                Text(
-                  '${AppStrings.appTagline}. Construído com Clean Architecture, Flutter 3.x, persistência NoSQL local ultrarrápida e Docker multi-stage build com Nginx.',
-                  style: TextStyle(
-                    fontSize: 13,
-                    height: 1.45,
-                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSectionHeader(String title, bool isDark) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 11.5,
-        fontWeight: FontWeight.bold,
-        letterSpacing: 1.0,
-        color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+  Widget _buildGroupHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 12),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.8,
+          color: Color(0xFF8E8E93),
+        ),
       ),
     );
   }
 
-  BoxDecoration _boxDecoration(bool isDark) {
-    return BoxDecoration(
-      color: isDark ? AppColors.darkCard : AppColors.lightCard,
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(
-        color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+  Widget _buildGroupCard(bool isDark, List<Widget> children) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isDark ? const Color(0xFF38383A) : const Color(0xFFE5E5EA),
+          width: 0.5,
+        ),
       ),
+      child: Column(children: children),
     );
   }
 
-  Widget _buildStatRow(String label, String value, bool isDark) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 13.5,
-            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-          ),
-        ),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 13.5,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primaryLight,
-          ),
-        ),
-      ],
+  Widget _buildDivider(bool isDark) {
+    return Divider(
+      height: 1,
+      thickness: 0.5,
+      indent: 16,
+      color: isDark ? const Color(0xFF38383A) : const Color(0xFFE5E5EA),
+    );
+  }
+
+  Widget _buildLeadingIcon(IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(icon, size: 18, color: color),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value, bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(fontSize: 15)),
+          Text(value, style: const TextStyle(fontSize: 14, color: Color(0xFF8E8E93))),
+        ],
+      ),
     );
   }
 }

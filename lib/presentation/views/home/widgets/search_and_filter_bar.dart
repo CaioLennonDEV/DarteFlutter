@@ -26,46 +26,36 @@ class SearchAndFilterBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          // Search Field
+          // iOS Cupertino Style Search Bar
           Expanded(
             child: Container(
-              height: 48,
+              height: 40,
               decoration: BoxDecoration(
-                color: isDark ? AppColors.darkCard : AppColors.lightCard,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
-                    blurRadius: 6,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                color: isDark ? const Color(0xFF1C1C1E) : const Color(0xFFE5E5EA),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: TextField(
                 controller: searchController,
                 onChanged: onSearchChanged,
                 textAlignVertical: TextAlignVertical.center,
                 style: TextStyle(
-                  fontSize: 14,
-                  color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                  fontSize: 14.5,
+                  color: isDark ? Colors.white : Colors.black,
                 ),
                 decoration: InputDecoration(
-                  hintText: AppStrings.searchHint,
-                  hintStyle: TextStyle(
-                    fontSize: 13.5,
-                    color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                  hintText: 'Buscar nas notas...',
+                  hintStyle: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF8E8E93),
                   ),
                   prefixIcon: const Icon(
                     Icons.search_rounded,
-                    size: 20,
-                    color: AppColors.primary,
+                    size: 18,
+                    color: Color(0xFF8E8E93),
                   ),
                   suffixIcon: searchController.text.isNotEmpty
                       ? IconButton(
-                          icon: const Icon(Icons.close_rounded, size: 18),
+                          icon: const Icon(Icons.cancel, size: 16, color: Color(0xFF8E8E93)),
                           onPressed: () {
                             searchController.clear();
                             onClearSearch();
@@ -76,33 +66,23 @@ class SearchAndFilterBar extends StatelessWidget {
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                 ),
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
 
-          // Grid / List Toggle Button
-          Container(
-            height: 48,
-            width: 48,
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkCard : AppColors.lightCard,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-              ),
+          // View Mode Switcher
+          IconButton(
+            icon: Icon(
+              isGridView ? Icons.view_agenda_outlined : Icons.grid_view_rounded,
+              size: 20,
+              color: AppColors.primary,
             ),
-            child: IconButton(
-              icon: Icon(
-                isGridView ? Icons.view_agenda_outlined : Icons.grid_view_rounded,
-                size: 20,
-                color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-              ),
-              onPressed: onToggleViewMode,
-              tooltip: isGridView ? 'Visualização em lista' : 'Visualização em grade',
-            ),
+            onPressed: onToggleViewMode,
+            tooltip: isGridView ? 'Lista' : 'Grade',
+            visualDensity: VisualDensity.compact,
           ),
         ],
       ),
