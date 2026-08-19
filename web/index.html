@@ -97,15 +97,15 @@
   </div>
 
   <script>
-    // Register Service Worker for 100% Offline PWA Support
+    // Register Dedicated Offline Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('flutter_service_worker.js?v=1', { scope: './' })
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
           .then(function (reg) {
-            console.log('ServiceWorker registered with scope:', reg.scope);
+            console.log('NotaIA Offline ServiceWorker active:', reg.scope);
           })
           .catch(function (err) {
-            console.log('ServiceWorker registration failed:', err);
+            console.log('ServiceWorker registration error:', err);
           });
       });
     }
