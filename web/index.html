@@ -97,6 +97,20 @@
   </div>
 
   <script>
+    // Register Service Worker for 100% Offline PWA Support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js?v=1', { scope: './' })
+          .then(function (reg) {
+            console.log('ServiceWorker registered with scope:', reg.scope);
+          })
+          .catch(function (err) {
+            console.log('ServiceWorker registration failed:', err);
+          });
+      });
+    }
+
+    // Smooth splash screen removal
     const observer = new MutationObserver((mutations, obs) => {
       const flt = document.querySelector('flutter-view') || document.querySelector('flt-glass-pane') || document.querySelector('canvas');
       if (flt) {
