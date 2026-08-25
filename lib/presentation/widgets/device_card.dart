@@ -35,19 +35,19 @@ class DeviceCard extends StatelessWidget {
         curve: Curves.easeInOut,
         decoration: BoxDecoration(
           color: ligado
-              ? cor.withValues(alpha: 0.12)
+              ? cor.withOpacity(0.12)
               : CiciTheme.cardDark,
           borderRadius: CiciTheme.radiusXl,
           border: Border.all(
             color: ligado
-                ? cor.withValues(alpha: 0.4)
+                ? cor.withOpacity(0.4)
                 : CiciTheme.glassBorder,
             width: ligado ? 1.5 : 0.5,
           ),
           boxShadow: ligado
               ? [
                   BoxShadow(
-                    color: cor.withValues(alpha: 0.2),
+                    color: cor.withOpacity(0.2),
                     blurRadius: 16,
                     spreadRadius: 1,
                   )
@@ -69,7 +69,7 @@ class DeviceCard extends StatelessWidget {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: ligado
-                          ? cor.withValues(alpha: 0.2)
+                          ? cor.withOpacity(0.2)
                           : CiciTheme.surfaceDark,
                       borderRadius: CiciTheme.radiusMd,
                     ),
@@ -111,7 +111,7 @@ class DeviceCard extends StatelessWidget {
                 _infoContextual,
                 style: CiciTheme.bodySm.copyWith(
                   color: ligado
-                      ? cor.withValues(alpha: 0.8)
+                      ? cor.withOpacity(0.8)
                       : CiciTheme.textMuted,
                 ),
               ),

@@ -57,7 +57,7 @@ class CiciTheme {
 
   static List<BoxShadow> get cardShadow => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.3),
+          color: Colors.black.withOpacity(0.3),
           blurRadius: 16,
           offset: const Offset(0, 4),
         ),
@@ -65,7 +65,7 @@ class CiciTheme {
 
   static List<BoxShadow> get glowShadow => [
         BoxShadow(
-          color: primaryBlue.withValues(alpha: 0.3),
+          color: primaryBlue.withOpacity(0.3),
           blurRadius: 20,
           spreadRadius: 2,
         ),
@@ -185,7 +185,7 @@ class CiciTheme {
           activeTrackColor: primaryBlue,
           inactiveTrackColor: surfaceDark,
           thumbColor: primaryBlueLight,
-          overlayColor: primaryBlue.withValues(alpha: 0.2),
+          overlayColor: primaryBlue.withOpacity(0.2),
           trackHeight: 6,
         ),
         switchTheme: SwitchThemeData(
@@ -195,7 +195,7 @@ class CiciTheme {
           }),
           trackColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
-              return successGreen.withValues(alpha: 0.4);
+              return successGreen.withOpacity(0.4);
             }
             return surfaceDark;
           }),

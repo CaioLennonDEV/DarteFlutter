@@ -31,7 +31,7 @@ class StatusIndicator extends StatelessWidget {
         boxShadow: (ligado || emAlerta)
             ? [
                 BoxShadow(
-                  color: cor.withValues(alpha: 0.6),
+                  color: cor.withOpacity(0.6),
                   blurRadius: 8,
                   spreadRadius: 2,
                 ),

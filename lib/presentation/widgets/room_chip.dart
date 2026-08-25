@@ -39,7 +39,7 @@ class RoomChip extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: CiciTheme.primaryBlue.withValues(alpha: 0.3),
+                    color: CiciTheme.primaryBlue.withOpacity(0.3),
                     blurRadius: 12,
                     spreadRadius: 1,
                   )

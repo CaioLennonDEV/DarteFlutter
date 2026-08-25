@@ -103,9 +103,9 @@ class AlertsScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: cor.withValues(alpha: 0.08),
+        color: cor.withOpacity(0.08),
         borderRadius: CiciTheme.radiusXl,
-        border: Border.all(color: cor.withValues(alpha: 0.2)),
+        border: Border.all(color: cor.withOpacity(0.2)),
       ),
       child: Column(
         children: [
@@ -132,10 +132,10 @@ class AlertsScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: CiciTheme.dangerRed.withValues(alpha: 0.1),
+          color: CiciTheme.dangerRed.withOpacity(0.1),
           borderRadius: CiciTheme.radiusLg,
           border:
-              Border.all(color: CiciTheme.dangerRed.withValues(alpha: 0.3)),
+              Border.all(color: CiciTheme.dangerRed.withOpacity(0.3)),
         ),
         child: Row(
           children: [
@@ -143,7 +143,7 @@ class AlertsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: CiciTheme.dangerRed.withValues(alpha: 0.2),
+                color: CiciTheme.dangerRed.withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
               child: const Icon(

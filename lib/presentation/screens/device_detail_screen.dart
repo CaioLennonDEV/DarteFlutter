@@ -105,18 +105,18 @@ class DeviceDetailScreen extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: ligado
-            ? cor.withValues(alpha: 0.15)
+            ? cor.withOpacity(0.15)
             : CiciTheme.surfaceDark,
         border: Border.all(
           color: ligado
-              ? cor.withValues(alpha: 0.5)
+              ? cor.withOpacity(0.5)
               : CiciTheme.glassBorder,
           width: 2,
         ),
         boxShadow: ligado
             ? [
                 BoxShadow(
-                  color: cor.withValues(alpha: 0.3),
+                  color: cor.withOpacity(0.3),
                   blurRadius: 30,
                   spreadRadius: 5,
                 ),
@@ -150,12 +150,12 @@ class DeviceDetailScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
         decoration: BoxDecoration(
           color: ligado
-              ? CiciTheme.successGreen.withValues(alpha: 0.15)
+              ? CiciTheme.successGreen.withOpacity(0.15)
               : CiciTheme.surfaceDark,
           borderRadius: CiciTheme.radiusFull,
           border: Border.all(
             color: ligado
-                ? CiciTheme.successGreen.withValues(alpha: 0.5)
+                ? CiciTheme.successGreen.withOpacity(0.5)
                 : CiciTheme.glassBorder,
           ),
         ),
@@ -214,7 +214,7 @@ class DeviceDetailScreen extends StatelessWidget {
               activeTrackColor: CiciTheme.lampadaColor,
               thumbColor: CiciTheme.lampadaColor,
               inactiveTrackColor: CiciTheme.surfaceDark,
-              overlayColor: CiciTheme.lampadaColor.withValues(alpha: 0.2),
+              overlayColor: CiciTheme.lampadaColor.withOpacity(0.2),
               trackHeight: 6,
             ),
             child: Slider(
@@ -384,7 +384,7 @@ class DeviceDetailScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
                             color: selecionado
-                                ? CiciTheme.primaryBlue.withValues(alpha: 0.2)
+                                ? CiciTheme.primaryBlue.withOpacity(0.2)
                                 : CiciTheme.surfaceDark,
                             borderRadius: CiciTheme.radiusMd,
                             border: Border.all(
@@ -455,10 +455,10 @@ class DeviceDetailScreen extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: CiciTheme.dangerRed.withValues(alpha: 0.2),
+                    color: CiciTheme.dangerRed.withOpacity(0.2),
                     borderRadius: CiciTheme.radiusFull,
                     border: Border.all(
-                        color: CiciTheme.dangerRed.withValues(alpha: 0.5)),
+                        color: CiciTheme.dangerRed.withOpacity(0.5)),
                   ),
                   child: Text(
                     '⚠️ ALERTA',

@@ -22,10 +22,10 @@ class StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: CiciTheme.radiusLg,
         border: Border.all(
-          color: color.withValues(alpha: 0.25),
+          color: color.withOpacity(0.25),
           width: 1,
         ),
       ),
