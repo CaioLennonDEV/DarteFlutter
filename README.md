@@ -1,25 +1,23 @@
 # 🏠 Cici — Automação e Monitoramento Residencial Inteligente
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![Docker](https://img.shields.io/badge/Docker-Multi--stage-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Docker](https://img.shields.io/badge/Docker-CLI-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![Arquitetura](https://img.shields.io/badge/Arquitetura-Camadas-FF9800?style=for-the-badge)]()
 [![POO](https://img.shields.io/badge/POO-Avançada-10B981?style=for-the-badge)]()
 
-> **Cici** é um app de Automação e Monitoramento de Dispositivos Residenciais Inteligentes desenvolvido em **Flutter** com visual dark premium estilo **Alexa/Google Home**. Controle lâmpadas, termostatos e sensores com interface interativa. Projeto acadêmico de Computação Móvel — Tema 09.
+> **Cici** é um Módulo Central de Domínio (Dart Puro, sem UI/Flutter) para controle de estados de **sensores**, **termostatos** e **luzes inteligentes** em ambientes residenciais. Projeto acadêmico de Computação Móvel — Tema 09.
 
 ---
 
 ## 📸 Recursos Principais
 
-- 💡 **Controle de Lâmpadas**: Ligar/desligar, slider de brilho (0–100%), cor hexadecimal, modo econômico pré-configurado.
-- 🌡️ **Gerenciamento de Termostatos**: Slider de temperatura-alvo (16°C–32°C), modos de operação (aquecimento, resfriamento, automático).
+- 💡 **Controle de Lâmpadas**: Ligar/desligar, ajustar brilho (0–100%) e cor (hexadecimal), modo econômico pré-configurado.
+- 🌡️ **Gerenciamento de Termostatos**: Controle de temperatura-alvo (16°C–32°C), modos de operação (aquecimento, resfriamento, automático).
 - 📡 **Monitoramento de Sensores**: Sensores de temperatura, umidade, movimento, fumaça e luminosidade com sistema de alerta por limiar.
-- 🏠 **Dashboard Inteligente**: Grid de dispositivos com filtro por cômodo, stat cards de resumo, e navegação fluida.
-- 📋 **Log de Auditoria (Mixin)**: Registro automático de todas as ações com timestamp.
-- ⚡ **Monitoramento de Energia (Mixin)**: Rastreamento de consumo acumulado em kWh.
-- 🚨 **Alertas em Tempo Real**: Painel de alertas com notificação visual animada.
-- 🎨 **Visual Dark Premium**: Glassmorphism, micro-animações, Google Fonts (Inter + Outfit).
+- 📋 **Log de Auditoria (Mixin)**: Registro automático de todas as ações com timestamp via `LogAuditoriaMixin`.
+- ⚡ **Monitoramento de Energia (Mixin)**: Rastreamento de consumo acumulado em kWh via `MonitoramentoEnergiaMixin`.
+- 🚨 **Exceções Customizadas**: Tratamento semântico de erros com `DispositivoOfflineException`, `EstadoInvalidoException` e `DispositivoNaoEncontradoException`.
+- 📊 **Relatórios Inteligentes**: Geração dinâmica de relatórios com Collection-If/For e Spread Operators.
 
 ---
 
@@ -28,35 +26,20 @@
 ```
 DarteFlutter/
 ├── bin/
-│   └── main.dart                          # CLI executável (Dart puro)
+│   └── main.dart                          # CLI executável (ponto de entrada)
 ├── lib/
-│   ├── main.dart                          # Entry point Flutter
-│   ├── models/
+│   ├── models/                            # ✅ MANTIDO (domínio)
 │   │   ├── dispositivo_inteligente.dart   # Classe abstrata + Mixins
-│   │   ├── lampada.dart                   # Herança: Lâmpada
-│   │   ├── termostato.dart                # Herança: Termostato
-│   │   └── sensor.dart                    # Herança: Sensor
+│   │   ├── lampada.dart                   # Herança: Lâmpada Inteligente
+│   │   ├── termostato.dart                # Herança: Termostato Inteligente
+│   │   └── sensor.dart                    # Herança: Sensor Inteligente
 │   ├── exceptions/
 │   │   └── dispositivo_exceptions.dart    # Exceções customizadas
-│   ├── services/
-│   │   └── gerenciador_casa_inteligente.dart  # Serviço central
-│   └── presentation/
-│       ├── theme/
-│       │   └── cici_theme.dart            # Design system dark premium
-│       ├── controllers/
-│       │   └── casa_controller.dart       # ChangeNotifier (Provider)
-│       ├── screens/
-│       │   ├── home_screen.dart           # Dashboard principal
-│       │   ├── device_detail_screen.dart  # Detalhe/controle do dispositivo
-│       │   └── alerts_screen.dart         # Painel de alertas e logs
-│       └── widgets/
-│           ├── device_card.dart           # Card de dispositivo
-│           ├── room_chip.dart             # Chip de cômodo
-│           ├── stat_card.dart             # Card de estatística
-│           └── status_indicator.dart      # Indicador de status
-├── pubspec.yaml
-├── Dockerfile                             # Multi-stage (Flutter Web + Nginx)
-└── docker-compose.yml
+│   └── services/
+│       └── gerenciador_casa_inteligente.dart  # Serviço central (coleções funcionais)
+├── pubspec.yaml                           # Dart puro (sem Flutter)
+├── Dockerfile                             # Container Dart CLI
+└── docker-compose.yml                     # Orquestração Docker
 ```
 
 ---
@@ -72,48 +55,58 @@ DarteFlutter/
 | 2a | Construtor padrão gerativo (`this.atributo`) | ✅ | Todos os modelos |
 | 2b | Construtor nomeado | ✅ | `.modoEconomico()`, `.configuracaoPadrao()`, `.temperatura()` |
 | 2c | Construtor `factory` com validação | ✅ | `.fromMap()` em todos os modelos |
-| 3a | Null Safety sem operador `!` | ✅ | Projeto inteiro (`?`, `??`, `?.`) |
+| 3a | Null Safety sem operador `!` | ✅ | Projeto inteiro (`?`, `??`, `?.`, `??=`) |
 | 3b | Coleções funcionais (`.map`, `.where`, `.fold`, `.any`, spread, collection-if/for) | ✅ | `GerenciadorCasaInteligente` |
 | 4a | Exceções customizadas (`extends Exception`) | ✅ | `dispositivo_exceptions.dart` |
 | 4b | `try-on-catch-finally` | ✅ | `bin/main.dart` + serviço |
-| 5 | Arquivo executável CLI (`bin/main.dart`) | ✅ | 8 cenários de teste |
+| 5 | Arquivo executável CLI (`bin/main.dart`) | ✅ | 8 cenários de teste demonstrados |
 
 ---
 
 ## 🚀 Como Executar
 
-### Flutter Web via Docker (Recomendado)
+### Via Docker (Recomendado)
 
 ```bash
 docker compose up --build
-# Acesse http://localhost:8080
 ```
 
-### Flutter Local
+### Via Dart SDK (Local)
 
 ```bash
-flutter pub get
-flutter run -d chrome
-```
-
-### CLI Dart Puro
-
-```bash
+dart pub get
 dart run bin/main.dart
 ```
 
 ---
 
+## 📝 Cenários de Teste no CLI
+
+O `bin/main.dart` simula automaticamente:
+
+1. **Cadastro** de lâmpadas, termostatos e sensores (3 de cada, usando os 3 tipos de construtores).
+2. **Operações** de ligar/desligar, ajustar brilho e temperatura, registrar leituras.
+3. **Filtragens funcionais** com `.where()`, `.map()`, `.fold()`, `.any()`.
+4. **8 cenários de erro forçados**:
+   - Temperatura abaixo de 16°C
+   - Temperatura acima de 32°C
+   - Brilho em lâmpada desligada
+   - Dispositivo com ID inexistente
+   - Leitura em sensor offline
+   - Factory com dados inválidos
+   - Inserção de ID duplicado
+   - Leitura acima do limiar de alerta
+5. **Log de auditoria** (mixin) com histórico de ações.
+6. **Relatório final** com Collection-If/For e Spread Operators.
+
+---
+
 ## 🛠️ Tecnologias
 
-| Tecnologia | Uso |
-|------------|-----|
-| Flutter 3.x | Framework UI |
-| Dart 3.x | Linguagem principal |
-| Provider | Gerenciamento de estado |
-| Google Fonts | Tipografia (Inter, Outfit) |
-| Flutter Animate | Micro-animações |
-| Docker + Nginx | Deploy Web containerizado |
+| Tecnologia | Versão | Uso |
+|------------|--------|-----|
+| Dart | ≥ 3.0.0 | Linguagem principal (Dart Puro) |
+| Docker | Latest | Containerização e execução |
 
 ---
 

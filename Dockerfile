@@ -1,43 +1,20 @@
 # ==========================================
-# Stage 1: Build Flutter Web Application
+# Cici — Automação Residencial Inteligente
+# Dockerfile para execução do módulo Dart Puro (CLI)
 # ==========================================
-FROM ghcr.io/cirruslabs/flutter:3.24.5 AS builder
+FROM dart:stable AS runtime
 
 WORKDIR /app
 
-# Enable Flutter Web
-RUN flutter config --enable-web
+# Copiar dependências primeiro (cache de camadas Docker)
+COPY pubspec.yaml ./
+RUN dart pub get
 
-# Copy dependency specifications first to leverage Docker layer caching
-COPY pubspec.yaml analysis_options.yaml ./
-RUN flutter pub get
-
-# Copy all source files
+# Copiar código-fonte
 COPY . .
 
-# Build production Flutter Web bundle
-RUN flutter build web --release --tree-shake-icons --pwa-strategy=none --no-source-maps
+# Resolver dependências offline
+RUN dart pub get --offline
 
-# ==========================================
-# Stage 2: Serve with Nginx Alpine
-# ==========================================
-FROM nginx:alpine AS production
-
-# Remove default nginx static assets
-RUN rm -rf /usr/share/nginx/html/*
-
-# Copy built web files from Stage 1
-COPY --from=builder /app/build/web /usr/share/nginx/html
-
-# Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose HTTP port
-EXPOSE 80
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-  CMD wget -q -O /dev/null http://127.0.0.1:80/ || exit 1
-
-# Start Nginx in foreground
-CMD ["nginx", "-g", "daemon off;"]
+# Executar o módulo CLI
+CMD ["dart", "run", "bin/main.dart"]
