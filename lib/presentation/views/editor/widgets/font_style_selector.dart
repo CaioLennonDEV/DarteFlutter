@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class FontStyleSelector {
@@ -11,6 +10,19 @@ class FontStyleSelector {
     'Roboto',
   ];
 
+  static const List<String> _baseEmojiFallback = [
+    '-apple-system',
+    'BlinkMacSystemFont',
+    'SF Pro Text',
+    'Segoe UI',
+    'Roboto',
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji',
+    'sans-serif',
+  ];
+
   static TextStyle getTextStyle({
     String? fontFamily,
     double? fontSize,
@@ -20,47 +32,33 @@ class FontStyleSelector {
     final size = fontSize ?? 15.5;
     final font = fontFamily ?? 'Inter';
 
-    try {
-      switch (font) {
-        case 'Playfair Display':
-          return GoogleFonts.playfairDisplay(
-            fontSize: size,
-            color: color,
-            fontWeight: fontWeight,
-          );
-        case 'Fira Code':
-          return GoogleFonts.firaCode(
-            fontSize: size,
-            color: color,
-            fontWeight: fontWeight,
-          );
-        case 'Caveat':
-          return GoogleFonts.caveat(
-            fontSize: size + 4,
-            color: color,
-            fontWeight: fontWeight,
-          );
-        case 'Roboto':
-          return GoogleFonts.roboto(
-            fontSize: size,
-            color: color,
-            fontWeight: fontWeight,
-          );
-        case 'Inter':
-        default:
-          return GoogleFonts.inter(
-            fontSize: size,
-            color: color,
-            fontWeight: fontWeight,
-          );
-      }
-    } catch (_) {
-      return TextStyle(
-        fontSize: size,
-        color: color,
-        fontWeight: fontWeight,
-      );
+    List<String> fallbacks;
+    switch (font) {
+      case 'Playfair Display':
+        fallbacks = ['Georgia', 'Times New Roman', 'serif', ..._baseEmojiFallback];
+        break;
+      case 'Fira Code':
+        fallbacks = ['Menlo', 'Consolas', 'Courier New', 'monospace', ..._baseEmojiFallback];
+        break;
+      case 'Caveat':
+        fallbacks = ['Brush Script MT', 'Comic Sans MS', 'cursive', ..._baseEmojiFallback];
+        break;
+      case 'Roboto':
+        fallbacks = ['Helvetica Neue', 'Arial', ..._baseEmojiFallback];
+        break;
+      case 'Inter':
+      default:
+        fallbacks = _baseEmojiFallback;
+        break;
     }
+
+    return TextStyle(
+      fontFamily: font,
+      fontFamilyFallback: fallbacks,
+      fontSize: size,
+      color: color,
+      fontWeight: fontWeight,
+    );
   }
 
   static void show(

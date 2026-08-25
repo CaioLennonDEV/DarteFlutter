@@ -155,59 +155,19 @@ class _DrawingCanvasModalState extends State<DrawingCanvasModal> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: GestureDetector(
-                  onPanStart: (details) {
-                    _saveToHistory();
-                    final renderBox = context.findRenderObject() as RenderBox?;
-                    final localPos = details.localPosition;
-
-                    setState(() {
-                      _points.add(
-                        DrawingPoint(
-                          x: localPos.dx,
-                          y: localPos.dy,
-                          colorValue: _isEraser
-                              ? canvasBgColor.value
-                              : _selectedColor.value,
-                          strokeWidth: _isEraser ? _strokeWidth * 2.5 : _strokeWidth,
-                        ),
-                      );
-                    });
+                child: _InteractiveDrawingCanvas(
+                  initialPoints: _points,
+                  selectedColor: _selectedColor,
+                  strokeWidth: _strokeWidth,
+                  isEraser: _isEraser,
+                  canvasBgColor: canvasBgColor,
+                  onStrokeStart: _saveToHistory,
+                  onStrokeEnd: () {
+                    setState(() {});
                   },
-                  onPanUpdate: (details) {
-                    final localPos = details.localPosition;
-                    setState(() {
-                      _points.add(
-                        DrawingPoint(
-                          x: localPos.dx,
-                          y: localPos.dy,
-                          colorValue: _isEraser
-                              ? canvasBgColor.value
-                              : _selectedColor.value,
-                          strokeWidth: _isEraser ? _strokeWidth * 2.5 : _strokeWidth,
-                        ),
-                      );
-                    });
+                  onPointsChanged: (points) {
+                    _points = points;
                   },
-                  onPanEnd: (details) {
-                    setState(() {
-                      if (_points.isNotEmpty) {
-                        _points.add(
-                          DrawingPoint(
-                            x: _points.last.x,
-                            y: _points.last.y,
-                            colorValue: _points.last.colorValue,
-                            strokeWidth: _points.last.strokeWidth,
-                            isEndOfStroke: true,
-                          ),
-                        );
-                      }
-                    });
-                  },
-                  child: CustomPaint(
-                    painter: DrawingPainter(points: _points),
-                    size: Size.infinite,
-                  ),
                 ),
               ),
             ),
@@ -346,26 +306,171 @@ class DrawingPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (points.isEmpty) return;
 
-    for (int i = 0; i < points.length - 1; i++) {
-      if (points[i].isEndOfStroke) continue;
-      if (points[i + 1].isEndOfStroke) continue;
+    final paint = Paint()
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..style = PaintingStyle.stroke
+      ..isAntiAlias = true;
 
-      final p1 = points[i];
-      final p2 = points[i + 1];
+    Path path = Path();
+    bool inStroke = false;
+    bool pathHasPoints = false;
+    int? currentColor;
+    double? currentWidth;
 
-      final paint = Paint()
-        ..color = p1.color
-        ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round
-        ..strokeWidth = p1.strokeWidth
-        ..isAntiAlias = true;
+    void drawCurrentPath() {
+      if (inStroke && pathHasPoints) {
+        paint.color = Color(currentColor!);
+        paint.strokeWidth = currentWidth!;
+        canvas.drawPath(path, paint);
+      }
+    }
 
-      canvas.drawLine(p1.offset, p2.offset, paint);
+    for (int i = 0; i < points.length; i++) {
+      final point = points[i];
+
+      if (point.isEndOfStroke) {
+        drawCurrentPath();
+        path = Path();
+        pathHasPoints = false;
+        inStroke = false;
+        continue;
+      }
+
+      if (!inStroke) {
+        path.moveTo(point.x, point.y);
+        inStroke = true;
+        pathHasPoints = true;
+        currentColor = point.colorValue;
+        currentWidth = point.strokeWidth;
+      } else {
+        if (point.colorValue != currentColor || point.strokeWidth != currentWidth) {
+          drawCurrentPath();
+          path = Path();
+          path.moveTo(point.x, point.y);
+          pathHasPoints = true;
+          currentColor = point.colorValue;
+          currentWidth = point.strokeWidth;
+        } else {
+          path.lineTo(point.x, point.y);
+          pathHasPoints = true;
+        }
+      }
+    }
+
+    drawCurrentPath();
+  }
+
+  @override
+  bool shouldRepaint(covariant DrawingPainter oldDelegate) {
+    return oldDelegate.points != points || oldDelegate.points.length != points.length;
+  }
+}
+
+class _InteractiveDrawingCanvas extends StatefulWidget {
+  final List<DrawingPoint> initialPoints;
+  final Color selectedColor;
+  final double strokeWidth;
+  final bool isEraser;
+  final Color canvasBgColor;
+  final VoidCallback onStrokeStart;
+  final VoidCallback onStrokeEnd;
+  final ValueChanged<List<DrawingPoint>> onPointsChanged;
+
+  const _InteractiveDrawingCanvas({
+    required this.initialPoints,
+    required this.selectedColor,
+    required this.strokeWidth,
+    required this.isEraser,
+    required this.canvasBgColor,
+    required this.onStrokeStart,
+    required this.onStrokeEnd,
+    required this.onPointsChanged,
+  });
+
+  @override
+  State<_InteractiveDrawingCanvas> createState() => _InteractiveDrawingCanvasState();
+}
+
+class _InteractiveDrawingCanvasState extends State<_InteractiveDrawingCanvas> {
+  late List<DrawingPoint> _localPoints;
+
+  @override
+  void initState() {
+    super.initState();
+    _localPoints = List.from(widget.initialPoints);
+  }
+
+  @override
+  void didUpdateWidget(covariant _InteractiveDrawingCanvas oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialPoints != oldWidget.initialPoints || 
+        widget.initialPoints.length != _localPoints.length) {
+      _localPoints = List.from(widget.initialPoints);
     }
   }
 
   @override
-  bool shouldRepaint(covariant DrawingPainter oldDelegate) => true;
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onPanStart: (details) {
+        widget.onStrokeStart();
+        final localPos = details.localPosition;
+        setState(() {
+          _localPoints.add(
+            DrawingPoint(
+              x: localPos.dx,
+              y: localPos.dy,
+              colorValue: widget.isEraser
+                  ? widget.canvasBgColor.value
+                  : widget.selectedColor.value,
+              strokeWidth: widget.isEraser ? widget.strokeWidth * 2.5 : widget.strokeWidth,
+            ),
+          );
+        });
+        widget.onPointsChanged(_localPoints);
+      },
+      onPanUpdate: (details) {
+        final localPos = details.localPosition;
+        setState(() {
+          _localPoints.add(
+            DrawingPoint(
+              x: localPos.dx,
+              y: localPos.dy,
+              colorValue: widget.isEraser
+                  ? widget.canvasBgColor.value
+                  : widget.selectedColor.value,
+              strokeWidth: widget.isEraser ? widget.strokeWidth * 2.5 : widget.strokeWidth,
+            ),
+          );
+        });
+        widget.onPointsChanged(_localPoints);
+      },
+      onPanEnd: (details) {
+        setState(() {
+          if (_localPoints.isNotEmpty) {
+            _localPoints.add(
+              DrawingPoint(
+                x: _localPoints.last.x,
+                y: _localPoints.last.y,
+                colorValue: _localPoints.last.colorValue,
+                strokeWidth: _localPoints.last.strokeWidth,
+                isEndOfStroke: true,
+              ),
+            );
+          }
+        });
+        widget.onPointsChanged(_localPoints);
+        widget.onStrokeEnd();
+      },
+      child: RepaintBoundary(
+        child: CustomPaint(
+          painter: DrawingPainter(points: _localPoints),
+          size: Size.infinite,
+        ),
+      ),
+    );
+  }
 }
 
 class DrawingThumbnailWidget extends StatelessWidget {

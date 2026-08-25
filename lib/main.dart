@@ -16,6 +16,7 @@ import 'presentation/views/home/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  debugPrint('🚀 [NotaIA]: Inicializado com Otimizações de Performance v2');
 
   // Configure Global Error Logging to Console & Screen
   FlutterError.onError = (FlutterErrorDetails details) {

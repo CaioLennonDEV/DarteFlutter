@@ -1,16 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppTheme {
+  static const String defaultFontFamily = '-apple-system';
+  static const List<String> defaultFontFamilyFallback = [
+    'BlinkMacSystemFont',
+    'SF Pro Text',
+    'SF Pro Display',
+    'Segoe UI',
+    'Roboto',
+    'Helvetica Neue',
+    'Helvetica',
+    'Arial',
+    'sans-serif',
+  ];
+
   // iOS Light Theme Configuration
   static ThemeData get lightTheme {
-    final baseTextTheme = GoogleFonts.interTextTheme(ThemeData.light().textTheme);
+    const textTheme = TextTheme(
+      displaySmall: TextStyle(
+        fontWeight: FontWeight.w800,
+        color: AppColors.lightTextPrimary,
+        letterSpacing: -1.0,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+      headlineMedium: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: AppColors.lightTextPrimary,
+        letterSpacing: -0.5,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+      titleLarge: TextStyle(
+        fontWeight: FontWeight.w700,
+        color: AppColors.lightTextPrimary,
+        letterSpacing: -0.3,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+      titleMedium: TextStyle(
+        fontWeight: FontWeight.w600,
+        color: AppColors.lightTextPrimary,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+      bodyLarge: TextStyle(
+        color: AppColors.lightTextPrimary,
+        fontSize: 16,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+      bodyMedium: TextStyle(
+        color: AppColors.lightTextSecondary,
+        fontSize: 14,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+    );
 
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      fontFamily: defaultFontFamily,
+      fontFamilyFallback: defaultFontFamilyFallback,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.lightBg,
       colorScheme: const ColorScheme.light(
@@ -23,35 +77,7 @@ class AppTheme {
         error: AppColors.error,
         onError: Colors.white,
       ),
-      textTheme: baseTextTheme.copyWith(
-        displaySmall: baseTextTheme.displaySmall?.copyWith(
-          fontWeight: FontWeight.w800,
-          color: AppColors.lightTextPrimary,
-          letterSpacing: -1.0,
-        ),
-        headlineMedium: baseTextTheme.headlineMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-          color: AppColors.lightTextPrimary,
-          letterSpacing: -0.5,
-        ),
-        titleLarge: baseTextTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: AppColors.lightTextPrimary,
-          letterSpacing: -0.3,
-        ),
-        titleMedium: baseTextTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w600,
-          color: AppColors.lightTextPrimary,
-        ),
-        bodyLarge: baseTextTheme.bodyLarge?.copyWith(
-          color: AppColors.lightTextPrimary,
-          fontSize: 16,
-        ),
-        bodyMedium: baseTextTheme.bodyMedium?.copyWith(
-          color: AppColors.lightTextSecondary,
-          fontSize: 14,
-        ),
-      ),
+      textTheme: textTheme,
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -63,6 +89,8 @@ class AppTheme {
           color: AppColors.lightTextPrimary,
           fontSize: 17,
           fontWeight: FontWeight.w600,
+          fontFamily: defaultFontFamily,
+          fontFamilyFallback: defaultFontFamilyFallback,
         ),
       ),
       cardTheme: CardTheme(
@@ -85,9 +113,9 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.0),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: AppColors.primary, width: 1.0),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       ),
@@ -96,11 +124,53 @@ class AppTheme {
 
   // iOS Dark Theme Configuration
   static ThemeData get darkTheme {
-    final baseTextTheme = GoogleFonts.interTextTheme(ThemeData.dark().textTheme);
+    const textTheme = TextTheme(
+      displaySmall: TextStyle(
+        fontWeight: FontWeight.w800,
+        color: AppColors.darkTextPrimary,
+        letterSpacing: -1.0,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+      headlineMedium: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: AppColors.darkTextPrimary,
+        letterSpacing: -0.5,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+      titleLarge: TextStyle(
+        fontWeight: FontWeight.w700,
+        color: AppColors.darkTextPrimary,
+        letterSpacing: -0.3,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+      titleMedium: TextStyle(
+        fontWeight: FontWeight.w600,
+        color: AppColors.darkTextPrimary,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+      bodyLarge: TextStyle(
+        color: AppColors.darkTextPrimary,
+        fontSize: 16,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+      bodyMedium: TextStyle(
+        color: AppColors.darkTextSecondary,
+        fontSize: 14,
+        fontFamily: defaultFontFamily,
+        fontFamilyFallback: defaultFontFamilyFallback,
+      ),
+    );
 
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      fontFamily: defaultFontFamily,
+      fontFamilyFallback: defaultFontFamilyFallback,
       primaryColor: AppColors.primaryLight,
       scaffoldBackgroundColor: AppColors.darkBg,
       colorScheme: const ColorScheme.dark(
@@ -113,35 +183,7 @@ class AppTheme {
         error: AppColors.error,
         onError: Colors.white,
       ),
-      textTheme: baseTextTheme.copyWith(
-        displaySmall: baseTextTheme.displaySmall?.copyWith(
-          fontWeight: FontWeight.w800,
-          color: AppColors.darkTextPrimary,
-          letterSpacing: -1.0,
-        ),
-        headlineMedium: baseTextTheme.headlineMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-          color: AppColors.darkTextPrimary,
-          letterSpacing: -0.5,
-        ),
-        titleLarge: baseTextTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: AppColors.darkTextPrimary,
-          letterSpacing: -0.3,
-        ),
-        titleMedium: baseTextTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w600,
-          color: AppColors.darkTextPrimary,
-        ),
-        bodyLarge: baseTextTheme.bodyLarge?.copyWith(
-          color: AppColors.darkTextPrimary,
-          fontSize: 16,
-        ),
-        bodyMedium: baseTextTheme.bodyMedium?.copyWith(
-          color: AppColors.darkTextSecondary,
-          fontSize: 14,
-        ),
-      ),
+      textTheme: textTheme,
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -153,6 +195,8 @@ class AppTheme {
           color: AppColors.darkTextPrimary,
           fontSize: 17,
           fontWeight: FontWeight.w600,
+          fontFamily: defaultFontFamily,
+          fontFamilyFallback: defaultFontFamilyFallback,
         ),
       ),
       cardTheme: CardTheme(
@@ -175,9 +219,9 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primaryLight, width: 1.0),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          borderSide: BorderSide(color: AppColors.primaryLight, width: 1.0),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       ),

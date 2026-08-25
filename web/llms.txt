@@ -1,0 +1,16 @@
+# NotaIA
+
+> NotaIA é um aplicativo moderno e inteligente de anotações estilo Apple Notes, com suporte a persistência local NoSQL (Hive), transcrição de áudio via IA, quadro de desenho (doodles) e modos claro e escuro.
+
+## Documentação e Links
+
+- [Início](http://localhost:8080/): Interface principal do aplicativo com listagem de notas em formato de grade ou lista, filtros por categorias e busca em tempo real.
+- [Repositório](https://github.com/CaioLennonDEV/DarteFlutter): Código-fonte e arquitetura do projeto desenvolvido em Flutter Web com suporte a Docker e Nginx.
+
+## Recursos Principais
+
+- **Anotações Inteligentes**: Criar, editar, fixar, categorizar e pesquisar anotações instantaneamente.
+- **Gravação de Áudio com Transcrição IA**: Grave áudios e obtenha transcrição e resumo inteligente.
+- **Quadro de Desenho (Doodles)**: Canvas interativo para anotações manuscritas e desenhos livres.
+- **Personalização de Estilo**: Seleção de fontes (Inter, Fira Code, Playfair Display, Caveat, Roboto), tamanhos e temas.
+- **Offline & Local**: Persistência 100% local com Hive NoSQL e SharedPreferences.

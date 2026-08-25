@@ -77,8 +77,6 @@ class _NoteEditorScreenState extends State<NoteEditorScreen> {
   void _markModified() {
     if (!_isModified) {
       setState(() => _isModified = true);
-    } else {
-      setState(() {});
     }
   }
 

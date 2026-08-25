@@ -1,4 +1,4 @@
-const CACHE_NAME = 'notaia-offline-v2';
+const CACHE_NAME = 'notaia-offline-v5';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -16,7 +16,7 @@ self.addEventListener('install', (event) => {
       try {
         await cache.addAll(CORE_ASSETS);
       } catch (e) {
-        console.log('Error caching some core assets during install:', e);
+        console.log('Core assets caching notice:', e);
       }
     })
   );
@@ -42,9 +42,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
-  const url = new URL(event.request.url);
-
-  // Handle SPA Navigation requests (opening the app / reloading offline)
+  // Handle SPA Navigation requests (opening app / reloading)
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).catch(async () => {
@@ -58,7 +56,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cache First, Network Fallback + Cache on the fly
+  // Static Assets & Scripts: Cache First with Network Fallback
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
@@ -76,7 +74,7 @@ self.addEventListener('fetch', (event) => {
       }).catch(async () => {
         const fallback = await caches.match(event.request);
         if (fallback) return fallback;
-        return new Response('', { status: 408, statusText: 'Offline' });
+        return new Response('Not found', { status: 404, statusText: 'Not Found' });
       });
     })
   );

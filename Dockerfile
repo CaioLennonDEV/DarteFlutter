@@ -15,8 +15,8 @@ RUN flutter pub get
 # Copy all source files
 COPY . .
 
-# Build production Flutter Web bundle
-RUN flutter build web --release
+# Build production Flutter Web bundle with tree shaking and auto renderer
+RUN flutter build web --release --tree-shake-icons --pwa-strategy=none --no-source-maps
 
 # ==========================================
 # Stage 2: Serve with Nginx Alpine (Lightweight)

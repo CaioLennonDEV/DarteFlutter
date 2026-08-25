@@ -5,7 +5,7 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="NotaIA - Aplicativo de anotações estilo Apple Notes.">
+  <meta name="description" content="NotaIA - Aplicativo inteligente de anotações inspirado no estilo Apple Notes com persistência local, desenho e IA.">
 
   <!-- Apple iOS Native Fullscreen App Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -23,7 +23,11 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
   <link rel="manifest" href="manifest.json">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <!-- Accessible Viewport (Maximum Scale 5.0 for Lighthouse 100% Score) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+
+  <!-- Resource Preload Hints -->
+  <link rel="preload" href="flutter_bootstrap.js" as="script">
 
   <style>
     * {
@@ -61,7 +65,8 @@
       align-items: center;
       background-color: #000000;
       z-index: 99999;
-      transition: opacity 0.3s ease-out;
+      pointer-events: none;
+      transition: opacity 0.25s ease-out;
     }
     .logo-container {
       width: 68px;
@@ -111,60 +116,52 @@
   </div>
 
   <script>
-    // iOS Standalone App Stay-In-App Handler
-    (function(document, navigator, standalone) {
-      if ((standalone in navigator) && navigator[standalone]) {
-        var curnode, location = document.location, stop = /^(a|html)$/i;
-        document.addEventListener('click', function(e) {
-          curnode = e.target;
-          while (!(stop).test(curnode.nodeName)) {
-            curnode = curnode.parentNode;
-          }
-          if ('href' in curnode && (curnode.href.indexOf('http') || ~curnode.href.indexOf(location.host)) && (curnode.href.indexOf(location.host) !== -1)) {
-            e.preventDefault();
-            location.href = curnode.href;
-          }
-        }, false);
-      }
-    })(document, window.navigator, 'standalone');
-
     // Register Dedicated Offline Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
         navigator.serviceWorker.register('./sw.js', { scope: './' })
-          .then(function (reg) {
-            console.log('NotaIA Offline ServiceWorker active:', reg.scope);
-          })
           .catch(function (err) {
             console.log('ServiceWorker registration error:', err);
           });
       });
     }
 
-    // Smooth splash screen removal
-    const observer = new MutationObserver((mutations, obs) => {
-      const flt = document.querySelector('flutter-view') || document.querySelector('flt-glass-pane') || document.querySelector('canvas');
-      if (flt) {
-        const loading = document.getElementById('loading');
-        if (loading) {
-          loading.style.opacity = '0';
-          setTimeout(() => {
-            if (loading) loading.remove();
-          }, 300);
-        }
-        obs.disconnect();
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-    setTimeout(() => {
+    // High-performance Splash Screen dismissal
+    function hideLoadingScreen() {
       const loading = document.getElementById('loading');
       if (loading) {
         loading.style.opacity = '0';
-        setTimeout(() => {
-          if (loading) loading.remove();
-        }, 300);
+        setTimeout(function() {
+          if (loading && loading.parentNode) {
+            loading.parentNode.removeChild(loading);
+          }
+        }, 250);
       }
-    }, 3500);
+    }
+
+    // Flutter engine first frame event
+    window.addEventListener('flutter-first-frame', hideLoadingScreen);
+
+    // Fallback direct child observer (zero deep subtree traversal)
+    if (window.MutationObserver) {
+      const obs = new MutationObserver(function (mutations) {
+        for (let i = 0; i < mutations.length; i++) {
+          const added = mutations[i].addedNodes;
+          for (let j = 0; j < added.length; j++) {
+            const tag = (added[j].nodeName || '').toLowerCase();
+            if (tag === 'flutter-view' || tag === 'flt-glass-pane' || tag === 'canvas') {
+              hideLoadingScreen();
+              obs.disconnect();
+              return;
+            }
+          }
+        }
+      });
+      obs.observe(document.body, { childList: true, subtree: false });
+    }
+
+    // Fallback safety timeout
+    setTimeout(hideLoadingScreen, 2800);
   </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
