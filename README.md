@@ -1,126 +1,122 @@
-# 🧠 NotaIA - Gerenciador Inteligente de Notas
+# 🏠 Cici — Automação e Monitoramento Residencial Inteligente
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
 [![Docker](https://img.shields.io/badge/Docker-Multi--stage-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![Nginx](https://img.shields.io/badge/Nginx-Alpine-009639?style=for-the-badge&logo=nginx&logoColor=white)](https://nginx.org)
-[![Storage](https://img.shields.io/badge/Storage-100%25%20Local%20Hive-FF9800?style=for-the-badge)](https://pub.dev/packages/hive)
+[![Arquitetura](https://img.shields.io/badge/Arquitetura-Camadas-FF9800?style=for-the-badge)]()
+[![POO](https://img.shields.io/badge/POO-Avançada-10B981?style=for-the-badge)]()
 
-> **NotaIA** é um aplicativo de anotações moderno, ágil e inteligente desenvolvido em **Flutter** com foco em privacidade (100% offline e local) e esteira de deploy conteinerizada com **Docker** e **Nginx**.
+> **Cici** é um app de Automação e Monitoramento de Dispositivos Residenciais Inteligentes desenvolvido em **Flutter** com visual dark premium estilo **Alexa/Google Home**. Controle lâmpadas, termostatos e sensores com interface interativa. Projeto acadêmico de Computação Móvel — Tema 09.
 
 ---
 
 ## 📸 Recursos Principais
 
-- 📝 **CRUD Completo de Notas**: Crie, visualize, edite e remova notas com feedback instantâneo e suporte a desfazer exclusão (*Undo*).
-- 🔍 **Busca e Filtros em Tempo Real**: Filtre por palavras no título, conteúdo ou tags, e selecione por categorias inteligentes (Trabalho, Estudos, Ideias, Pessoal, Finanças, Geral).
-- 🧠 **Módulo de Inteligência Artificial Local (NotaIA)**:
-  - ✨ **Resumo Inteligente**: Extrai insights e pontos principais do texto.
-  - 🪄 **Melhoria de Escrita**: Formata, pontua e estrutura o texto automaticamente.
-  - 📋 **Extração de Checklist**: Converte anotações e frases de ação em tarefas estruturadas em Markdown.
-  - 🏷️ **Sugestão de Tags**: Gera tags inteligentes para organização.
-  - 💡 **Gerador de Título**: Sugere títulos contextuais com base no conteúdo.
-- 💾 **Persistência 100% Local NoSQL**: Utiliza **Hive** (IndexedDB na web e NoSQL ultrarrápido em dispositivos móveis e desktop). Seus dados nunca saem do seu dispositivo.
-- 🎨 **Design Moderno & Material 3**:
-  - Tema Claro e Tema Escuro persistidos.
-  - Paleta de cores pastel customizável para cada nota.
-  - Layout adaptativo e responsivo para Celulares, Tablets e Navegadores Web (Staggered Grid / Masonry).
-- 📌 **Fixação de Notas**: Fixe anotações importantes no topo com um clique.
+- 💡 **Controle de Lâmpadas**: Ligar/desligar, slider de brilho (0–100%), cor hexadecimal, modo econômico pré-configurado.
+- 🌡️ **Gerenciamento de Termostatos**: Slider de temperatura-alvo (16°C–32°C), modos de operação (aquecimento, resfriamento, automático).
+- 📡 **Monitoramento de Sensores**: Sensores de temperatura, umidade, movimento, fumaça e luminosidade com sistema de alerta por limiar.
+- 🏠 **Dashboard Inteligente**: Grid de dispositivos com filtro por cômodo, stat cards de resumo, e navegação fluida.
+- 📋 **Log de Auditoria (Mixin)**: Registro automático de todas as ações com timestamp.
+- ⚡ **Monitoramento de Energia (Mixin)**: Rastreamento de consumo acumulado em kWh.
+- 🚨 **Alertas em Tempo Real**: Painel de alertas com notificação visual animada.
+- 🎨 **Visual Dark Premium**: Glassmorphism, micro-animações, Google Fonts (Inter + Outfit).
 
 ---
 
-## 🐳 Executando com Docker (Recomendado)
-
-Você não precisa instalar Flutter ou Dart na sua máquina local! Basta ter o **Docker** instalado.
-
-### 1. Subir a aplicação com Docker Compose:
-```bash
-docker compose up -d --build
-```
-
-### 2. Acessar a aplicação:
-Abra seu navegador em: **`http://localhost:8080`**
-
-### 3. Parar a aplicação:
-```bash
-docker compose down
-```
-
----
-
-## 🛠️ Arquitetura do Projeto (Clean Architecture / MVVM)
+## 🏗️ Arquitetura em Camadas
 
 ```
-lib/
-├── main.dart                          # Ponto de entrada e injeção de dependências
-├── core/
-│   ├── constants/                     # Cores, Strings, Tema Material 3
-│   │   ├── app_colors.dart
-│   │   ├── app_strings.dart
-│   │   └── app_theme.dart
-│   ├── services/                      # Serviços locais e IA
-│   │   ├── ai_assistant_service.dart
-│   │   └── local_storage_service.dart
-│   └── utils/                         # Formatação de datas e responsividade
-│       ├── date_formatter.dart
-│       └── responsive_layout.dart
-├── domain/                            # Camada de domínio (Entidades e Interfaces)
+DarteFlutter/
+├── bin/
+│   └── main.dart                          # CLI executável (Dart puro)
+├── lib/
+│   ├── main.dart                          # Entry point Flutter
 │   ├── models/
-│   │   ├── note_category.dart
-│   │   └── note_model.dart
-│   └── repositories/
-│       └── note_repository.dart
-├── data/                              # Camada de dados (Implementações e Datasources)
-│   ├── datasources/
-│   │   └── note_local_datasource.dart
-│   └── repositories/
-│       └── note_repository_impl.dart
-└── presentation/                      # Camada de apresentação (Telas, Widgets e Controllers)
-    ├── controllers/
-    │   ├── notes_controller.dart
-    │   └── theme_controller.dart
-    ├── views/
-    │   ├── home/
-    │   │   ├── home_screen.dart
-    │   │   └── widgets/
-    │   ├── editor/
-    │   │   ├── note_editor_screen.dart
-    │   │   └── widgets/
-    │   └── settings/
-    │       └── settings_screen.dart
-    └── widgets/
-        ├── custom_snackbar.dart
-        └── confirmation_dialog.dart
+│   │   ├── dispositivo_inteligente.dart   # Classe abstrata + Mixins
+│   │   ├── lampada.dart                   # Herança: Lâmpada
+│   │   ├── termostato.dart                # Herança: Termostato
+│   │   └── sensor.dart                    # Herança: Sensor
+│   ├── exceptions/
+│   │   └── dispositivo_exceptions.dart    # Exceções customizadas
+│   ├── services/
+│   │   └── gerenciador_casa_inteligente.dart  # Serviço central
+│   └── presentation/
+│       ├── theme/
+│       │   └── cici_theme.dart            # Design system dark premium
+│       ├── controllers/
+│       │   └── casa_controller.dart       # ChangeNotifier (Provider)
+│       ├── screens/
+│       │   ├── home_screen.dart           # Dashboard principal
+│       │   ├── device_detail_screen.dart  # Detalhe/controle do dispositivo
+│       │   └── alerts_screen.dart         # Painel de alertas e logs
+│       └── widgets/
+│           ├── device_card.dart           # Card de dispositivo
+│           ├── room_chip.dart             # Chip de cômodo
+│           ├── stat_card.dart             # Card de estatística
+│           └── status_indicator.dart      # Indicador de status
+├── pubspec.yaml
+├── Dockerfile                             # Multi-stage (Flutter Web + Nginx)
+└── docker-compose.yml
 ```
 
 ---
 
-## 🚀 Execução Local (Opcional - Requer Flutter SDK)
+## 🎯 Checklist Técnico Implementado
 
-Caso tenha o Flutter instalado e queira rodar diretamente:
+| # | Requisito | Status | Localização |
+|---|-----------|--------|-------------|
+| 1a | Classe abstrata com contratos | ✅ | `DispositivoInteligente` |
+| 1b | Herança (`extends`, `super`, `@override toString()`) | ✅ | `Lampada`, `Termostato`, `Sensor` |
+| 1c | Mixin (`with`) | ✅ | `LogAuditoriaMixin`, `MonitoramentoEnergiaMixin` |
+| 1d | Encapsulamento estrito (`_`, getters/setters, validação, `final`) | ✅ | Todos os modelos |
+| 2a | Construtor padrão gerativo (`this.atributo`) | ✅ | Todos os modelos |
+| 2b | Construtor nomeado | ✅ | `.modoEconomico()`, `.configuracaoPadrao()`, `.temperatura()` |
+| 2c | Construtor `factory` com validação | ✅ | `.fromMap()` em todos os modelos |
+| 3a | Null Safety sem operador `!` | ✅ | Projeto inteiro (`?`, `??`, `?.`) |
+| 3b | Coleções funcionais (`.map`, `.where`, `.fold`, `.any`, spread, collection-if/for) | ✅ | `GerenciadorCasaInteligente` |
+| 4a | Exceções customizadas (`extends Exception`) | ✅ | `dispositivo_exceptions.dart` |
+| 4b | `try-on-catch-finally` | ✅ | `bin/main.dart` + serviço |
+| 5 | Arquivo executável CLI (`bin/main.dart`) | ✅ | 8 cenários de teste |
+
+---
+
+## 🚀 Como Executar
+
+### Flutter Web via Docker (Recomendado)
 
 ```bash
-# Obter dependências
+docker compose up --build
+# Acesse http://localhost:8080
+```
+
+### Flutter Local
+
+```bash
 flutter pub get
-
-# Executar na Web
 flutter run -d chrome
+```
 
-# Executar em dispositivo ou emulador
-flutter run
+### CLI Dart Puro
+
+```bash
+dart run bin/main.dart
 ```
 
 ---
 
-## 📦 Estrutura DevOps
+## 🛠️ Tecnologias
 
-- **`Dockerfile`**: Compilação em multi-stage build. A primeira etapa usa a imagem do Flutter SDK para compilar os artefatos web otimizados (`flutter build web --release`). A segunda etapa empacota os arquivos em uma imagem leve `nginx:alpine`.
-- **`nginx.conf`**: Configuração com compressão gzip, cache de arquivos estáticos, cabeçalhos de segurança e roteamento SPA (`try_files $uri $uri/ /index.html`).
-- **`docker-compose.yml`**: Serviço com mapeamento de porta `8080:80`, healthcheck e reinicialização automática.
-- **`.gitignore`**: Configuração abrangente ignorando arquivos de build, SDKs, chaves e dependências locais.
+| Tecnologia | Uso |
+|------------|-----|
+| Flutter 3.x | Framework UI |
+| Dart 3.x | Linguagem principal |
+| Provider | Gerenciamento de estado |
+| Google Fonts | Tipografia (Inter, Outfit) |
+| Flutter Animate | Micro-animações |
+| Docker + Nginx | Deploy Web containerizado |
 
 ---
 
-## 📄 Licença
+## 👤 Autor
 
-Este projeto é de código aberto sob a licença [MIT](LICENSE).
+Projeto acadêmico de **Computação Móvel** — Tema 09: Automação e Monitoramento de Dispositivos Residenciais.

@@ -15,11 +15,11 @@ RUN flutter pub get
 # Copy all source files
 COPY . .
 
-# Build production Flutter Web bundle with tree shaking and auto renderer
+# Build production Flutter Web bundle
 RUN flutter build web --release --tree-shake-icons --pwa-strategy=none --no-source-maps
 
 # ==========================================
-# Stage 2: Serve with Nginx Alpine (Lightweight)
+# Stage 2: Serve with Nginx Alpine
 # ==========================================
 FROM nginx:alpine AS production
 
@@ -29,13 +29,13 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy built web files from Stage 1
 COPY --from=builder /app/build/web /usr/share/nginx/html
 
-# Copy custom Nginx configuration for Flutter SPA routing
+# Copy custom Nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose HTTP port
 EXPOSE 80
 
-# Health check to ensure Nginx is responding
+# Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD wget -q -O /dev/null http://127.0.0.1:80/ || exit 1
 

@@ -1,14 +1,12 @@
 services:
-  notaia-web:
+  cici-web:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: notaia_app
+    container_name: cici_app
     ports:
       - "8080:80"
     restart: unless-stopped
-    environment:
-      - NODE_ENV=production
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:80/ || exit 1"]
       interval: 30s
