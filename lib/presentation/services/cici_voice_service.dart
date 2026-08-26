@@ -48,11 +48,15 @@ class CiciVoiceService {
         final results = event.results;
         if (results != null && results.isNotEmpty) {
           final lastResult = results.last;
-          final text = lastResult.first.transcript;
-          final isFinal = lastResult.isFinal ?? true;
+          final len = lastResult.length;
+          if (len != null && len > 0) {
+            final alternative = lastResult.item(0);
+            final text = alternative.transcript;
+            final isFinal = lastResult.isFinal ?? true;
 
-          if (text != null && text.trim().isNotEmpty) {
-            onResult(text, isFinal);
+            if (text != null && text.trim().isNotEmpty) {
+              onResult(text, isFinal);
+            }
           }
         }
       });
