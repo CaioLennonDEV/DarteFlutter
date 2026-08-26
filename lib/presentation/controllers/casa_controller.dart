@@ -5,7 +5,9 @@ import '../../models/dispositivo_inteligente.dart';
 import '../../models/lampada.dart';
 import '../../models/sensor.dart';
 import '../../models/termostato.dart';
+import '../../services/cici_nlp_processor.dart';
 import '../../services/gerenciador_casa_inteligente.dart';
+import '../widgets/chat_bubble.dart';
 
 /// Controller central do app Cici.
 ///
@@ -15,6 +17,15 @@ class CasaController extends ChangeNotifier {
   /// Instância do gerenciador de domínio.
   final GerenciadorCasaInteligente _gerenciador;
 
+  /// Instância do processador de linguagem natural.
+  late final CiciNlpProcessor _nlp;
+
+  /// Histórico de mensagens do chat do hub.
+  final List<ChatMessage> _mensagens = [];
+
+  /// Indica se o assistente está fingindo processar o comando.
+  bool _assistenteProcessando = false;
+
   /// Cômodo atualmente selecionado para filtragem (null = todos).
   String? _comodoSelecionado;
 
@@ -23,7 +34,9 @@ class CasaController extends ChangeNotifier {
 
   CasaController()
       : _gerenciador = GerenciadorCasaInteligente(nomeResidencia: 'Casa Cici') {
+    _nlp = CiciNlpProcessor(_gerenciador);
     _popularDados();
+    _inicializarMensagemBoasVindas();
   }
 
   // =========================================================================
@@ -248,5 +261,55 @@ class CasaController extends ChangeNotifier {
     // Simular consumo
     luzSala.registrarConsumo(0.15);
     termoSala.registrarConsumo(0.80);
+  }
+
+  // =========================================================================
+  // ASSISTENTE INTELIGENTE (CHATHUB)
+  // =========================================================================
+
+  List<ChatMessage> get mensagens => List.unmodifiable(_mensagens);
+  bool get assistenteProcessando => _assistenteProcessando;
+
+  void _inicializarMensagemBoasVindas() {
+    _mensagens.add(ChatMessage(
+      text: 'Olá! Sou a Cici, sua assistente residencial. 🎙️\n\n'
+          'Me ative dizendo meu nome no comando, por exemplo:\n'
+          '• "Cici, ligue a luz da sala"\n'
+          '• "Cici, qual o consumo de energia?"\n'
+          '• "Cici, ajuste a temperatura do quarto para 22 graus"\n'
+          '• "Cici, ligar tudo"',
+      timestamp: DateTime.now(),
+      isUser: false,
+    ));
+  }
+
+  /// Envia uma mensagem no chat do assistente.
+  Future<void> enviarMensagemAssistente(String texto) async {
+    if (texto.trim().isEmpty) return;
+
+    // 1. Adicionar mensagem do usuário
+    _mensagens.add(ChatMessage(
+      text: texto,
+      timestamp: DateTime.now(),
+      isUser: true,
+    ));
+    _assistenteProcessando = true;
+    notifyListeners();
+
+    // 2. Simular atraso de processamento ("pensando" / "falando")
+    await Future.delayed(const Duration(milliseconds: 900));
+
+    // 3. Processar comando
+    final resultado = _nlp.processarComando(texto);
+
+    // 4. Adicionar resposta da Cici
+    _mensagens.add(ChatMessage(
+      text: resultado.resposta,
+      timestamp: DateTime.now(),
+      isUser: false,
+    ));
+
+    _assistenteProcessando = false;
+    notifyListeners();
   }
 }

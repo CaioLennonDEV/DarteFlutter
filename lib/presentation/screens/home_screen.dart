@@ -9,6 +9,7 @@ import '../widgets/device_card.dart';
 import '../widgets/room_chip.dart';
 import '../widgets/stat_card.dart';
 import 'alerts_screen.dart';
+import 'assistant_screen.dart';
 import 'device_detail_screen.dart';
 
 /// Dashboard principal do app Cici — estilo Alexa.
@@ -165,6 +166,29 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
+          // Botão Cici AI Hub
+          GestureDetector(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const AssistantScreen(),
+              ),
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: CiciTheme.primaryBlue.withOpacity(0.15),
+                borderRadius: CiciTheme.radiusMd,
+                border: Border.all(color: CiciTheme.primaryBlue.withOpacity(0.4)),
+              ),
+              child: const Icon(
+                Icons.mic_rounded,
+                color: CiciTheme.primaryBlueLight,
+                size: 22,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
           // Avatar / settings
           Container(
             padding: const EdgeInsets.all(8),
