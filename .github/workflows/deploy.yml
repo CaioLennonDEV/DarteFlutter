@@ -1,8 +1,8 @@
-name: Deploy NotaIA to GitHub Pages
+name: Deploy Cici to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [ cici-ui ]
   workflow_dispatch:
 
 permissions:
