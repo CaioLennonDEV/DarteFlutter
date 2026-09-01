@@ -5,6 +5,8 @@
 [![Docker](https://img.shields.io/badge/Docker-Multi--stage-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![Nginx](https://img.shields.io/badge/Nginx-Alpine-009639?style=for-the-badge&logo=nginx&logoColor=white)](https://nginx.org)
 [![Storage](https://img.shields.io/badge/Storage-100%25%20Local%20Hive-FF9800?style=for-the-badge)](https://pub.dev/packages/hive)
+[![Antigravity](https://img.shields.io/badge/Antigravity-Codifica%C3%A7%C3%A3o-4285F4?style=for-the-badge)](https://antigravity.google)
+[![Gemini](https://img.shields.io/badge/Gemini-Consultas-8E75C2?style=for-the-badge)](https://gemini.google)
 
 > **NotaIA** é um aplicativo de anotações moderno, ágil e inteligente desenvolvido em **Flutter** com foco em privacidade (100% offline e local) e esteira de deploy conteinerizada com **Docker** e **Nginx**.
 
@@ -121,6 +123,16 @@ flutter run
 
 ---
 
+## 🤖 Uso de Inteligência Artificial no Desenvolvimento
+
+Este projeto foi construído e é mantido com o auxílio de ferramentas de Inteligência Artificial:
+
+- **Antigravity**: Utilizado como assistente de codificação, geração de componentes, estruturação e refatoração do código-fonte.
+- **Gemini**: Utilizado para consultas técnicas, pesquisas de documentação, arquitetura e validação de soluções.
+
+---
+
 ## 📄 Licença
 
 Este projeto é de código aberto sob a licença [MIT](LICENSE).
+
