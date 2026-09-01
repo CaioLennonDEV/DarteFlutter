@@ -1,10 +1,10 @@
-# 🧠 NotaIA - Gerenciador Inteligente de Notas
+# 🧠 NotaIA & 🏠 Cici — Gerenciador Inteligente & Automação Residencial
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
 [![Docker](https://img.shields.io/badge/Docker-Multi--stage-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![Nginx](https://img.shields.io/badge/Nginx-Alpine-009639?style=for-the-badge&logo=nginx&logoColor=white)](https://nginx.org)
-[![Storage](https://img.shields.io/badge/Storage-100%25%20Local%20Hive-FF9800?style=for-the-badge)](https://pub.dev/packages/hive)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com)
 [![Antigravity](https://img.shields.io/badge/Antigravity-Codifica%C3%A7%C3%A3o-4285F4?style=for-the-badge)](https://antigravity.google)
 [![Gemini](https://img.shields.io/badge/Gemini-Consultas-8E75C2?style=for-the-badge)](https://gemini.google)
 
@@ -12,7 +12,27 @@
 
 ---
 
-## 📸 Recursos Principais
+## 🌿 Estrutura de Branches & Versões do Projeto
+
+> [!IMPORTANT]
+> O repositório está organizado em branches modulares para atender a diferentes entregas e escopos do projeto:
+>
+> - 📱 **`cici-ui`** (*Branch da Interface Completa Cici*): Contém a aplicação Flutter completa do **Cici — Automação e Monitoramento Residencial** (Tema 09 de Computação Móvel), com dashboard dark premium, controle interativo de lâmpadas, termostatos e sensores, Hub de IA com reconhecimento de voz Web (Web Speech API) e esteira de CI/CD para GitHub Pages. *(Pull Request da interface Cici pendente de merge para a main)*.
+> - 💻 **`cici-cli`** (*Branch CLI em Dart Puro*): Contém a implementação dos modelos de POO avançada, mixins, tratamento de exceções customizadas e script executável via terminal (`dart run bin/main.dart`).
+> - 🚀 **`main`** (*Branch Principal*): Contém o código base do gerenciador **NotaIA** com suporte a PWA offline-first, Docker multi-stage e Nginx.
+
+### Como alternar para a branch com a interface do Cici (`cici-ui`):
+```bash
+# Obter e mudar para a branch com a interface completa do Cici
+git checkout cici-ui
+
+# Executar com Docker Compose
+docker compose up -d --build
+```
+
+---
+
+## 📸 Recursos Principais (NotaIA)
 
 - 📝 **CRUD Completo de Notas**: Crie, visualize, edite e remova notas com feedback instantâneo e suporte a desfazer exclusão (*Undo*).
 - 🔍 **Busca e Filtros em Tempo Real**: Filtre por palavras no título, conteúdo ou tags, e selecione por categorias inteligentes (Trabalho, Estudos, Ideias, Pessoal, Finanças, Geral).
@@ -114,11 +134,12 @@ flutter run
 
 ---
 
-## 📦 Estrutura DevOps
+## 📦 Estrutura DevOps & CI/CD
 
 - **`Dockerfile`**: Compilação em multi-stage build. A primeira etapa usa a imagem do Flutter SDK para compilar os artefatos web otimizados (`flutter build web --release`). A segunda etapa empacota os arquivos em uma imagem leve `nginx:alpine`.
 - **`nginx.conf`**: Configuração com compressão gzip, cache de arquivos estáticos, cabeçalhos de segurança e roteamento SPA (`try_files $uri $uri/ /index.html`).
 - **`docker-compose.yml`**: Serviço com mapeamento de porta `8080:80`, healthcheck e reinicialização automática.
+- **`.github/workflows/deploy.yml`**: Esteira de **CI/CD** automatizada via GitHub Actions para compilação e deploy contínuo no GitHub Pages.
 - **`.gitignore`**: Configuração abrangente ignorando arquivos de build, SDKs, chaves e dependências locais.
 
 ---
