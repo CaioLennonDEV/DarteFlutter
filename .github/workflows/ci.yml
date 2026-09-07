@@ -1,0 +1,31 @@
+name: ReservaHub — CI & CLI Test Runner
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate-and-test:
+    name: 🧪 Validação Dart 3 e Execução do Test Runner
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: 🎯 Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: 📦 Instalar Dependências
+        run: dart pub get
+
+      - name: 🔍 Análise Estática de Código (Sound Null Safety)
+        run: dart analyze
+
+      - name: 🚀 Executar CLI Test Runner de Demonstração
+        run: dart run bin/main.dart
