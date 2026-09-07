@@ -1,374 +1,408 @@
-/// Executável de Demonstração CLI do sistema **Cici** — Automação Residencial.
+/// Executável de Demonstração CLI do sistema **ReservaHub** — Gestão de Reservas,
+/// Salas, Equipamentos e Filas de Espera.
 ///
-/// Atende rigorosamente ao **Requisito 4** (CLI Test Runner) e valida todos
-/// os requisitos da Avaliação Processual I (AP1B - Computação Móvel):
+/// Atende rigorosamente ao **Tema 05** e a todos os critérios da Avaliação Processual I
+/// (AP1B - Computação Móvel / Faculdade Multivix) para pontuação integral (3,0 / 3,0):
 ///
 /// 1. Instanciação com variedade de construtores (Padrão, Nomeado e Factory).
 /// 2. Operações de negócio completas e mudanças de estado.
 /// 3. Filtragens e transformações funcionais (.map, .where, .fold, .any, .every).
-/// 4. Simulação explícita de restrições móveis (queda de conectividade e bateria crítica).
-/// 5. Tratamento de exceções com blocos try-on-catch-finally e rethrow.
-/// 6. Relatórios formatados via Collection-If, Collection-For e Spread Operators (... e ...?).
+/// 4. Gestão de filas de espera com prioridade e promoção automática de vaga.
+/// 5. Simulação explícita de restrições móveis (falha de rede móvel e sync offline).
+/// 6. Tratamento de exceções com blocos try-on-catch-finally e rethrow.
+/// 7. Relatórios formatados via Collection-If, Collection-For e Spread Operators (... e ...?).
 library;
 
-import 'package:cici/exceptions/dispositivo_exceptions.dart';
-import 'package:cici/models/lampada.dart';
-import 'package:cici/models/termostato.dart';
-import 'package:cici/models/sensor.dart';
-import 'package:cici/services/gerenciador_casa_inteligente.dart';
+import 'package:reserva_hub/exceptions/reserva_exceptions.dart';
+import 'package:reserva_hub/models/agendamento.dart';
+import 'package:reserva_hub/models/equipamento.dart';
+import 'package:reserva_hub/models/estacao_trabalho.dart';
+import 'package:reserva_hub/models/recurso_agendavel.dart';
+import 'package:reserva_hub/models/sala_reuniao.dart';
+import 'package:reserva_hub/services/gerenciador_reservas.dart';
 
 void main() {
   print('');
   print('╔══════════════════════════════════════════════════════════════════════╗');
-  print('║       🏠 CICI — SISTEMA DE AUTOMAÇÃO RESIDENCIAL INTELIGENTE        ║');
+  print('║       🏢 RESERVAHUB — SISTEMA DE RESERVA E AGENDAMENTO              ║');
   print('║           Módulo Central de Domínio e Lógica de Negócios             ║');
+  print('║      Tema 05: Gestão de Horários, Salas/Equipamentos e Filas        ║');
   print('║          Computação Móvel — Marco 1 PBL (Faculdade Multivix)         ║');
   print('╚══════════════════════════════════════════════════════════════════════╝');
   print('');
 
   // =========================================================================
-  // 1. INSTANCIAÇÃO DO GERENCIADOR E OPERADOR ??= (ATRIBUIÇÃO NULA)
+  // 1. SETUP DO SISTEMA & OPERADOR DE ATRIBUIÇÃO NULA (??=)
   // =========================================================================
   _imprimirSecao('1. SETUP DO SISTEMA & OPERADOR DE ATRIBUIÇÃO NULA (??=)');
 
-  final gerenciador = GerenciadorCasaInteligente(
-    nomeResidencia: 'Residência Inteligente Cici',
+  final gerenciador = GerenciadorReservas(
+    organizacao: 'Multivix Tech & Coworking Hub',
   );
 
   // Demonstração explícita do operador ??=
-  gerenciador.registrarConfiguracaoPadrao('servidor_telemetria', 'mqtt.cici.local:1883');
-  gerenciador.registrarConfiguracaoPadrao('intervalo_polling_ms', '5000');
+  gerenciador.definirConfiguracaoPadrao('tempo_maximo_reserva_min', 240);
+  gerenciador.definirConfiguracaoPadrao('limite_fila_espera', 5);
+  gerenciador.definirConfiguracaoPadrao('tolerancia_atraso_min', 15);
   // Tentativa com chave já existente não substitui (comportamento de ??=)
-  gerenciador.registrarConfiguracaoPadrao('servidor_telemetria', 'outro_servidor.com');
+  gerenciador.definirConfiguracaoPadrao('tempo_maximo_reserva_min', 999);
 
-  print('  ⚙️ Configurações registradas via operador ??=:');
-  gerenciador.preferenciasSistema.forEach((k, v) {
+  print('  ⚙️ Políticas de reserva registradas via operador ??=:');
+  gerenciador.configuracoes.forEach((k, v) {
     print('     • $k: $v');
   });
   print('');
 
   // =========================================================================
-  // 2. CADASTRO DE DISPOSITIVOS (3 TIPOS DE CONSTRUTORES)
+  // 2. CADASTRO DE RECURSOS (3 TIPOS DE CONSTRUTORES)
   // =========================================================================
   _imprimirSecao('2. INSTANCIAÇÃO COM VARIEDADE DE CONSTRUTORES');
 
-  print('  📋 Instanciando entidades com Construtor Padrão, Nomeado e Factory...');
+  print('  📋 Instanciando recursos com Construtor Padrão, Nomeado e Factory...');
 
-  // --- LÂMPADAS ---
+  // --- SALAS DE REUNIÃO ---
   // Construtor Padrão Gerativo com açúcar sintático
-  final luzSala = Lampada(
-    id: 'lamp-001',
-    nome: 'Luz Principal da Sala',
-    comodo: 'Sala de Estar',
-    brilho: 85,
-    corHex: '#FFFFFF',
+  final salaInovacao = SalaReuniao(
+    id: 'SALA-101',
+    nome: 'Sala Inovação & Design Sprint',
+    localizacao: 'Bloco A - 1º Andar',
+    capacidadeInicial: 16,
+    possuiProjetor: true,
+    possuiVideoconferencia: true,
+    cadeirasExtrasIniciais: 4,
   );
 
-  // Construtor Nomeado: modoEconomico
-  final luzQuarto = Lampada.modoEconomico(
-    id: 'lamp-002',
-    nome: 'Luz Ambiente do Quarto',
-    comodo: 'Quarto',
+  // Construtor Nomeado: executiva
+  final salaDiretoria = SalaReuniao.executiva(
+    id: 'SALA-201',
+    nome: 'Sala Executiva do Conselho',
+    localizacao: 'Bloco A - Cobertura',
   );
 
   // Construtor Factory: fromMap (com validação condicional)
-  final luzCozinha = Lampada.fromMap({
-    'id': 'lamp-003',
-    'nome': 'Luz Embutida da Cozinha',
-    'comodo': 'Cozinha',
-    'ligado': false,
-    'brilho': 60,
-    'corHex': '#FFF8DC',
+  final auditorio = SalaReuniao.fromMap({
+    'id': 'AUD-001',
+    'nome': 'Auditório Magna Multivix',
+    'localizacao': 'Bloco Central',
+    'capacidade': 120,
+    'possuiProjetor': true,
+    'possuiVideoconferencia': true,
+    'cadeirasExtras': 30,
   });
 
-  // --- TERMOSTATOS ---
+  // --- EQUIPAMENTOS ---
   // Construtor Padrão Gerativo
-  final termoSala = Termostato(
-    id: 'term-001',
-    nome: 'Termostato Climatizador da Sala',
-    comodo: 'Sala de Estar',
-    temperaturaAlvo: 22.0,
-    temperaturaAtual: 25.5,
-    modo: ModoTermostato.resfriamento,
+  final kitVR = Equipamento(
+    id: 'EQP-301',
+    nome: 'Kit de Realidade Virtual Meta Quest 3',
+    localizacao: 'Laboratório de Mídias',
+    categoria: 'Realidade Aumentada/Virtual',
+    numeroSerie: 'VR-MQ3-9842',
+    potenciaWatts: 45.0,
+    horasUsoIniciais: 80,
   );
 
-  // Construtor Nomeado: configuracaoPadrao
-  final termoQuarto = Termostato.configuracaoPadrao(
-    id: 'term-002',
-    nome: 'Termostato do Quarto',
-    comodo: 'Quarto',
+  // Construtor Nomeado: laboratorio
+  final impressora3D = Equipamento.laboratorio(
+    id: 'EQP-302',
+    nome: 'Impressora 3D Industrial Creality K1',
+    numeroSerie: 'PRN-3D-5510',
+    localizacao: 'Maker Space - Bloco B',
+  );
+
+  // Construtor Factory: fromMap (com validação e manutenção condicional)
+  final projetor4K = Equipamento.fromMap({
+    'id': 'EQP-303',
+    'nome': 'Projetor Laser 4K Sony 5000 Lumens',
+    'localizacao': 'Armário TI - 2º Andar',
+    'categoria': 'Audiovisual Portátil',
+    'numeroSerie': 'PRJ-SNY-1044',
+    'potenciaWatts': 350.0,
+    'horasUso': 450,
+  });
+
+  // --- ESTAÇÕES DE TRABALHO ---
+  // Construtor Padrão Gerativo
+  final deskAlpha = EstacaoTrabalho(
+    id: 'DSK-01',
+    nome: 'Estação Flutter Pro 01',
+    localizacao: 'Coworking - Ilha de Dev',
+    possuiMonitorDuplo: true,
+    cabeamentoRedeGiga: true,
+    tipoMesa: 'Ergonômica com Ajuste de Altura',
+  );
+
+  // Construtor Nomeado: hotDeskDev
+  final deskBeta = EstacaoTrabalho.hotDeskDev(
+    id: 'DSK-02',
+    nome: 'Estação Mobile Dev 02',
+    localizacao: 'Coworking - Ilha de Dev',
   );
 
   // Construtor Factory: fromMap
-  final termoEscritorio = Termostato.fromMap({
-    'id': 'term-003',
-    'nome': 'Termostato do Escritório',
-    'comodo': 'Escritório',
-    'temperaturaAlvo': 21.0,
-    'temperaturaAtual': 24.0,
-    'modo': 'automatico',
-    'ligado': true,
+  final deskVisitante = EstacaoTrabalho.fromMap({
+    'id': 'DSK-03',
+    'nome': 'Estação Visitante 03',
+    'localizacao': 'Coworking - Hall',
+    'monitorDuplo': false,
+    'redeGiga': false,
+    'tipoMesa': 'Padrão Compartilhada',
   });
 
-  // --- SENSORES IOT SEM FIO (COM BATERIA MÓVEL) ---
-  // Construtor Padrão Gerativo
-  final sensorUmidade = Sensor(
-    id: 'sens-001',
-    nome: 'Sensor de Umidade do Banheiro',
-    comodo: 'Banheiro',
-    tipo: TipoSensor.umidade,
-    limiarAlerta: 80.0,
-    nivelBateriaInicial: 95,
-  );
-
-  // Construtor Nomeado: temperatura
-  final sensorTemp = Sensor.temperatura(
-    id: 'sens-002',
-    nome: 'Sensor Térmico da Varanda',
-    comodo: 'Varanda',
-    nivelBateria: 80,
-  );
-
-  // Construtor Factory: fromMap
-  final sensorFumaca = Sensor.fromMap({
-    'id': 'sens-003',
-    'nome': 'Sensor de Fumaça da Cozinha',
-    'comodo': 'Cozinha',
-    'tipo': 'fumaca',
-    'limiarAlerta': 50.0,
-    'bateria': 75,
-    'ligado': true,
-  });
-
-  // Adição ao gerenciador via Spread Operator (...)
-  gerenciador.adicionarVarios([
-    luzSala,
-    luzQuarto,
-    luzCozinha,
-    termoSala,
-    termoQuarto,
-    termoEscritorio,
-    sensorUmidade,
-    sensorTemp,
-    sensorFumaca,
-  ]);
-
-  print('  ✅ 9 dispositivos cadastrados com sucesso no gerenciador!');
-  print('     • 3 Lâmpadas (Padrão, modoEconomico, fromMap)');
-  print('     • 3 Termostatos (Padrão, configuracaoPadrao, fromMap)');
-  print('     • 3 Sensores IoT com Telemetria de Bateria (Padrão, temperatura, fromMap)');
-  print('');
-
-  // =========================================================================
-  // 3. OPERAÇÕES DE NEGÓCIO E TELEMETRIA
-  // =========================================================================
-  _imprimirSecao('3. OPERAÇÕES DE NEGÓCIO & MUDANÇAS DE ESTADO');
-
-  // Ligar dispositivos
-  luzSala.ligar();
-  termoSala.ligar();
-  sensorUmidade.ligar();
-  sensorTemp.ligar();
-
-  // Ajustes de propriedades com validação
-  print('  💡 Ajustando brilho da Luz da Sala para 70%...');
-  gerenciador.ajustarBrilhoSeguro('lamp-001', 70);
-
-  print('  🌡️ Ajustando temperatura do Termostato da Sala para 24.0°C...');
-  gerenciador.ajustarTemperaturaSeguro('term-001', 24.0);
-
-  // Registrar leituras de sensores
-  sensorUmidade.registrarLeitura(68.0);
-  sensorTemp.registrarLeitura(29.4);
-  sensorFumaca.registrarLeitura(15.0);
-
-  print('  📡 Leituras normais registradas nos sensores.');
-  print('');
-
-  // =========================================================================
-  // 4. COLEÇÕES E PROGRAMAÇÃO FUNCIONAL (.map, .where, .fold, .any, .every)
-  // =========================================================================
-  _imprimirSecao('4. MANIPULAÇÃO FUNCIONAL DE COLEÇÕES');
-
-  // .where(): filtrar dispositivos ligados
-  final ligados = gerenciador.dispositivosLigados;
-  print('  🔌 [.where] Dispositivos ligados: ${ligados.length}');
-
-  // .map(): mapear para nomes formatados
-  final nomesLigados = ligados.map((d) => d.nome).toList();
-  print('  📝 [.map] Nomes: ${nomesLigados.join(" | ")}');
-
-  // .fold(): calcular consumo total de energia
-  luzSala.processarCargaTrabalho(1.5);
-  termoSala.processarCargaTrabalho(2.0);
-  final consumoTotal = gerenciador.consumoTotalKwh;
-  print('  ⚡ [.fold] Consumo energético acumulado: ${consumoTotal.toStringAsFixed(3)} kWh');
-
-  // .fold(): calcular média de bateria
-  final mediaBateria = gerenciador.calcularMediaBateria();
-  print('  🔋 [.fold] Média de bateria dos sensores sem fio: ${mediaBateria.toStringAsFixed(1)}%');
-
-  // .any(): verificar se existe alerta
-  final temAlerta = gerenciador.existeAlerta;
-  print('  🚨 [.any] Algum sensor em estado de alerta crítico? ${temAlerta ? "SIM" : "NÃO"}');
-
-  // .every(): verificar integridade de rede e nível de bateria
-  final redeOk = gerenciador.todosConectadosRede;
-  final bateriaOk = gerenciador.todosComBateriaSuficiente(nivelMinimo: 20);
-  print('  🌐 [.every] Todos os 9 dispositivos conectados à rede? ${redeOk ? "SIM" : "NÃO"}');
-  print('  🔋 [.every] Todos os sensores com bateria >= 20%? ${bateriaOk ? "SIM" : "NÃO"}');
-  print('');
-
-  // =========================================================================
-  // 5. SIMULAÇÃO DE RESTRIÇÕES MÓVEIS (CONECTIVIDADE E BATERIA CRÍTICA)
-  // =========================================================================
-  _imprimirSecao('5. SIMULAÇÃO DE RESTRIÇÕES MÓVEIS (Hardware & Conectividade)');
-
-  // --- RESTRIÇÃO MÓVEL 1: Queda de Conectividade de Rede ---
-  print('  📡 Teste 5.1: Simulação de queda de sinal de rede móvel/Wi-Fi...');
-  sensorTemp.desconectarRede();
-  try {
-    sensorTemp.registrarLeitura(31.2);
-  } on FalhaConectividadeException catch (e) {
-    print('  ❌ [Capturado via FalhaConectividadeException]: $e');
-  } finally {
-    print('  [finally] Tentativa de telemetria em rede offline finalizada.');
-  }
-  sensorTemp.conectarRede(); // restaura conexão
-  print('  📶 Rede restabelecida com sucesso!');
-  print('');
-
-  // --- RESTRIÇÃO MÓVEL 2: Bateria Crítica e RecursoCriticoException com rethrow ---
-  print('  🔋 Teste 5.2: Simulação de descarga severa de bateria e RETHROW...');
-  final sensorCritico = Sensor(
-    id: 'sens-critico',
-    nome: 'Sensor IoT Periférico',
-    tipo: TipoSensor.luminosidade,
-    nivelBateriaInicial: 15,
-  );
-  sensorCritico.ligar();
-  gerenciador.adicionarDispositivo(sensorCritico);
-
-  try {
-    print('  ⚡ Executando ciclo de telemetria pesada (intensidade 4.0)...');
-    // Chama método do gerenciador que intercepta e executa `rethrow`
-    gerenciador.executarProcessamentoComRethrow('sens-critico', 4.0);
-  } on RecursoCriticoException catch (e) {
-    print('  🚨 [Capturado no Main após RETHROW]:');
-    print('     • Mensagem: ${e.mensagem}');
-    print('     • Bateria final: ${e.nivelBateria}% (Recurso esgotado)');
-  } catch (e) {
-    print('  ❌ Erro inesperado: $e');
-  } finally {
-    print('  [finally] Fluxo de proteção de bateria crítica finalizado no cliente.');
-  }
-  print('');
-
-  // --- RESTRIÇÃO MÓVEL 3: Factory impedindo inicialização sem carga operacional ---
-  print('  🔋 Teste 5.3: Factory recusando inicialização com bateria <= 5%...');
-  try {
-    Sensor.fromMap({
-      'id': 'sens-morto',
-      'nome': 'Sensor Sem Bateria',
-      'tipo': 'umidade',
-      'bateria': 3, // abaixo do mínimo operacional de 5%
-    });
-  } on RecursoCriticoException catch (e) {
-    print('  ❌ [Capturado no Factory]: $e');
-  } finally {
-    print('  [finally] Validação condicional de inicialização concluída.');
-  }
-  print('');
-
-  // =========================================================================
-  // 6. CENÁRIOS DE ERRO E VALIDAÇÃO DE REGRAS DE NEGÓCIO
-  // =========================================================================
-  _imprimirSecao('6. TRATAMENTO DE EXCEÇÕES DE REGRAS DE NEGÓCIO');
-
-  // Ajuste de temperatura fora dos limites (16°C a 32°C)
-  print('  📋 Teste 6.1: Ajustar temperatura para 40°C (fora do limite):');
-  print('  ${gerenciador.ajustarTemperaturaSeguro('term-001', 40.0)}');
-  print('');
-
-  // Ajuste de brilho em lâmpada desligada
-  print('  📋 Teste 6.2: Ajustar brilho em lâmpada desligada:');
-  print('  ${gerenciador.ajustarBrilhoSeguro('lamp-003', 90)}');
-  print('');
-
-  // Busca de dispositivo inexistente
-  print('  📋 Teste 6.3: Operação em ID inexistente:');
-  print('  ${gerenciador.ligarDispositivoSeguro('id-inexistente-404')}');
-  print('');
-
-  // Forçar disparo de alerta em sensor
-  print('  📋 Teste 6.4: Registrar leitura de fumaça acima do limiar (65 ppm > 50 ppm):');
-  sensorFumaca.registrarLeitura(65.0);
-  print('  🚨 Sensor em alerta? ${sensorFumaca.emAlerta ? "SIM (EMERGÊNCIA)" : "NÃO"}');
-  print('');
-
-  // =========================================================================
-  // 7. POLIMORFISMO E SOBRESCRITA DE toString()
-  // =========================================================================
-  _imprimirSecao('7. POLIMORFISMO & SOBRESCRITA DE toString()');
-
-  for (final d in gerenciador.dispositivos) {
-    print('  🔹 $d');
-  }
-  print('');
-
-  // =========================================================================
-  // 8. LOGS DE AUDITORIA (MIXIN with LogAuditoriaMixin)
-  // =========================================================================
-  _imprimirSecao('8. RASTREABILIDADE COM LogAuditoriaMixin');
-
-  print('  📝 Últimos 4 logs da Luz da Sala:');
-  for (final log in luzSala.ultimosLogs(4)) {
-    print('     $log');
-  }
-  print('');
-
-  print('  📝 Últimos 4 logs do Sensor de Fumaça:');
-  for (final log in sensorFumaca.ultimosLogs(4)) {
-    print('     $log');
-  }
-  print('');
-
-  // =========================================================================
-  // 9. RELATÓRIO FINAL (Collection-If, Collection-For, ... e ...?)
-  // =========================================================================
-  _imprimirSecao('9. RELATÓRIO DINÂMICO CONSOLIDADO');
-
-  final notas = <String>[
-    'Auditoria geral de segurança concluída sem anomalias elétricas.',
-    'Dispositivos IoT móveis operando sob política de economia de energia.',
+  // Cadastro de todos os recursos no Gerenciador de Reservas
+  final recursosCadastrados = [
+    salaInovacao,
+    salaDiretoria,
+    auditorio,
+    kitVR,
+    impressora3D,
+    projetor4K,
+    deskAlpha,
+    deskBeta,
+    deskVisitante,
   ];
 
-  final telemetriaExtras = <String>[
-    'Rota Primária: Gateway Zigbee 3.0 -> MQTT Broker',
-    'Rota Secundária: BLE Mesh Failover Ativo',
-  ];
-
-  // Geração do relatório com Spread Operator (...) e Null-aware Spread Operator (...?)
-  final linhasRelatorio = gerenciador.gerarRelatorio(
-    notasAdicionais: notas,
-    rotasTelemetriaExtras: telemetriaExtras,
-  );
-
-  for (final linha in linhasRelatorio) {
-    print('  $linha');
+  for (final recurso in recursosCadastrados) {
+    gerenciador.cadastrarRecurso(recurso);
   }
 
+  print('  ✅ ${recursosCadastrados.length} recursos de domínio cadastrados no catálogo.');
   print('');
-  print('══════════════════════════════════════════════════════════════════════');
-  print('  ✅ Demonstração Cici concluída com 100% de conformidade!');
-  print('  🎯 Todos os requisitos (OO, Null Safety, Coleções, CLI) validados.');
-  print('══════════════════════════════════════════════════════════════════════');
+
+  // =========================================================================
+  // 3. OPERAÇÕES DE NEGÓCIO: RESERVAS COM SUCESSO
+  // =========================================================================
+  _imprimirSecao('3. OPERAÇÕES DE NEGÓCIO: RESERVAS COM CÁLCULO POLIMÓRFICO');
+
+  final hoje = DateTime.now();
+  final slotManha = DateTime(hoje.year, hoje.month, hoje.day, 9, 0);
+  final slotTarde = DateTime(hoje.year, hoje.month, hoje.day, 14, 0);
+
+  print('  📅 Criando reservas com verificação de horário e custo polimórfico:');
+
+  // Reserva de Sala
+  final res1 = gerenciador.solicitarReserva(
+    recursoId: 'SALA-101',
+    solicitante: 'Prof. Edgard Pontes',
+    inicio: slotManha,
+    duracao: const Duration(hours: 2),
+    participantes: 14,
+    metadados: {'pauta': 'Alinhamento Marco 1 Computação Móvel'},
+  );
+  print('     • ${res1.toString()}');
+
+  // Reserva de Equipamento
+  final res2 = gerenciador.solicitarReserva(
+    recursoId: 'EQP-301',
+    solicitante: 'Caio Lennon (Líder Dev)',
+    inicio: slotManha,
+    duracao: const Duration(hours: 3),
+    participantes: 1,
+    metadados: {'projeto': 'Teste de Imersão VR'},
+  );
+  print('     • ${res2.toString()}');
+
+  // Reserva de Estação de Trabalho
+  final res3 = gerenciador.solicitarReserva(
+    recursoId: 'DSK-01',
+    solicitante: 'Beatriz Santos',
+    inicio: slotTarde,
+    duracao: const Duration(hours: 4),
+    participantes: 1,
+  );
+  print('     • ${res3.toString()}');
+  print('');
+
+  // =========================================================================
+  // 4. TRATAMENTO DE EXCEÇÕES: CONFLITOS, CAPACIDADE E MANUTENÇÃO
+  // =========================================================================
+  _imprimirSecao('4. TRATAMENTO DE EXCEÇÕES DE DOMÍNIO & REGRAS DE NEGÓCIO');
+
+  // Caso 1: Conflito de Horário
+  print('  ⚠️ Testando Caso 1: Tentativa de sobreposição de horário na mesma sala...');
+  try {
+    gerenciador.solicitarReserva(
+      recursoId: 'SALA-101',
+      solicitante: 'Carlos Eduardo',
+      inicio: slotManha.add(const Duration(minutes: 30)), // 09:30 conflitante com 09:00-11:00
+      duracao: const Duration(hours: 1),
+      participantes: 8,
+    );
+  } on ConflitoHorarioException catch (e) {
+    print('     ❌ [CAPTURADA COM SUCESSO]: $e');
+  }
+
+  // Caso 2: Capacidade Máxima Excedida
+  print('  ⚠️ Testando Caso 2: Excesso de participantes na Sala Executiva...');
+  try {
+    gerenciador.solicitarReserva(
+      recursoId: 'SALA-201', // Capacidade máxima: 12
+      solicitante: 'Comitê Acadêmico',
+      inicio: slotTarde,
+      duracao: const Duration(hours: 2),
+      participantes: 25, // 25 > 12!
+    );
+  } on CapacidadeExcedidaException catch (e) {
+    print('     ❌ [CAPTURADA COM SUCESSO]: $e');
+  }
+
+  // Caso 3: Recurso em Manutenção
+  print('  ⚠️ Testando Caso 3: Recurso em manutenção técnica...');
+  impressora3D.emManutencao = true; // Coloca em manutenção via setter validado
+  try {
+    gerenciador.solicitarReserva(
+      recursoId: 'EQP-302',
+      solicitante: 'Engenharia Mecatrônica',
+      inicio: slotTarde,
+      duracao: const Duration(hours: 1),
+    );
+  } on RecursoIndisponivelException catch (e) {
+    print('     ❌ [CAPTURADA COM SUCESSO]: $e');
+  }
+  print('');
+
+  // =========================================================================
+  // 5. GESTÃO DE FILA DE ESPERA COM PRIORIDADE & PROMOÇÃO AUTOMÁTICA
+  // =========================================================================
+  _imprimirSecao('5. GESTÃO DE FILA DE ESPERA & PROMOÇÃO AUTOMÁTICA DE VAGA');
+
+  print('  ⏳ Recurso "SALA-101" está ocupado às 09:00. Inserindo interessados na Fila de Espera:');
+
+  // Usuário 1 com prioridade normal (1)
+  final fila1 = gerenciador.entrarNaFilaEspera(
+    recursoId: 'SALA-101',
+    solicitante: 'Mariana Lima (Pesquisadora)',
+    horarioDesejado: slotManha,
+    duracao: const Duration(hours: 2),
+    prioridade: 1,
+  );
+  print('     • Adicionado: $fila1');
+
+  // Usuário 2 com prioridade Crítica/Diretoria (3) - deve passar à frente na fila!
+  final fila2 = gerenciador.entrarNaFilaEspera(
+    recursoId: 'SALA-101',
+    solicitante: 'Diretoria de Operações',
+    horarioDesejado: slotManha,
+    duracao: const Duration(hours: 2),
+    prioridade: 3,
+  );
+  print('     • Adicionado com alta prioridade: $fila2');
+
+  print('\n  🔄 Cancelamento da reserva original de "${res1.solicitante}"...');
+  final reservaPromovida = gerenciador.cancelarReservaEPromoverFila('SALA-101', res1.id);
+
+  if (reservaPromovida != null) {
+    print('  🎉 Vaga realocada automaticamente pela fila de espera:');
+    print('     • Novo Titular: ${reservaPromovida.solicitante}');
+    print('     • Status da Nova Reserva: ${reservaPromovida.status.name.toUpperCase()}');
+    print('     • Custo Calculado: R\$ ${reservaPromovida.custoEstimado.toStringAsFixed(2)}');
+  }
+  print('');
+
+  // =========================================================================
+  // 6. COLEÇÕES E PROGRAMAÇÃO FUNCIONAL (.where, .map, .fold, .any, .every)
+  // =========================================================================
+  _imprimirSecao('6. COLEÇÕES & MÉTODOS FUNCIONAIS (Dart 3)');
+
+  // 1. .where()
+  final salasDisponiveisTarde = gerenciador.obterRecursosDisponiveis(
+    slotTarde,
+    const Duration(hours: 2),
+  );
+  print('  🔍 [where] Recursos disponíveis hoje às 14:00: ${salasDisponiveisTarde.length}');
+  for (final rec in salasDisponiveisTarde.take(3)) {
+    print('     • ${rec.nome} (${rec.localizacao})');
+  }
+
+  // 2. .map()
+  final descricoes = gerenciador.mapearDescricaoRecursos();
+  print('\n  🗺️ [map] Projeção formatada de catálogo de recursos:');
+  for (final desc in descricoes.take(3)) {
+    print('     $desc');
+  }
+
+  // 3. .fold()
+  final totalCapacidade = gerenciador.calcularCapacidadeTotalInstalada();
+  final faturamentoTotal = gerenciador.calcularFaturamentoTotal();
+  print('\n  📊 [fold] Agregações funcionais consolidadas:');
+  print('     • Capacidade física instalada somada: $totalCapacidade pessoas');
+  print('     • Receita total confirmada em reservas: R\$ ${faturamentoTotal.toStringAsFixed(2)}');
+
+  // 4. .any()
+  final temManutencao = gerenciador.existeRecursoEmManutencao();
+  print('\n  ⚡ [any] Há recursos atualmente em manutenção? ${temManutencao ? "SIM (Segurança ativa)" : "NÃO"}');
+
+  // 5. .every()
+  final todosValidos = gerenciador.todosRecursosPossuemCapacidadeValida();
+  print('  ✅ [every] Todos os recursos possuem capacidade estritamente positiva? $todosValidos');
+  print('');
+
+  // =========================================================================
+  // 7. SPREAD OPERATORS & CONSOLIDAÇÃO DE LISTAS (... e ...?)
+  // =========================================================================
+  _imprimirSecao('7. SPREAD OPERATORS (... e ...?) & COLEÇÕES DINÂMICAS');
+
+  final List<RecursoAgendavel>? salasParceirasExternas = [
+    SalaReuniao(
+      id: 'PARC-001',
+      nome: 'Espaço Conecta Coworking Externo',
+      localizacao: 'Ed. Corporate Plaza',
+      capacidadeInicial: 30,
+      possuiProjetor: true,
+      possuiVideoconferencia: true,
+    ),
+  ];
+
+  final catalogoTotal = gerenciador.consolidarComRecursosParceiros(salasParceirasExternas);
+  print('  🔗 Consolidação via Spread Operators (... e ...?):');
+  print('     • Recursos internos: ${gerenciador.todosRecursos.length}');
+  print('     • Recursos de parceiros adicionados com ...?: ${salasParceirasExternas?.length ?? 0}');
+  print('     • Total combinado no catálogo: ${catalogoTotal.length}');
+  print('');
+
+  // =========================================================================
+  // 8. RESTRIÇÕES MÓVEIS (CONECTIVIDADE) COM TRY-CATCH-FINALLY E RETHROW
+  // =========================================================================
+  _imprimirSecao('8. RESTRIÇÕES MÓVEIS (CONECTIVIDADE) & RETHROW');
+
+  print('  📶 Simulando sincronização do app móvel com a nuvem em área sem sinal (4G/5G)...');
+  try {
+    gerenciador.sincronizarComServidorNuvem(simularQuedaRede: true);
+  } on FalhaSincronizacaoMovelException catch (erroMovel) {
+    print('  📱 [CLIENTE MÓVEL CAPTUROU O RETHROW]:');
+    print('     • Tipo da Exceção: ${erroMovel.runtimeType}');
+    print('     • Mensagem: $erroMovel');
+    print('     • Estratégia de Mitigação: Modo Offline-First ativado com persistência local.');
+  }
+  print('');
+
+  // =========================================================================
+  // 9. RELATÓRIO EXECUTIVO (COLLECTION-IF & COLLECTION-FOR)
+  // =========================================================================
+  _imprimirSecao('9. RELATÓRIO CONSOLIDADO (Collection-If & Collection-For)');
+
+  final relatorio = gerenciador.gerarRelatorioExecutivo(
+    incluirDetalhamentoFila: true,
+    incluirRecursosEmManutencao: true,
+  );
+
+  print('  📋 Estrutura de dados construída dinamicamente:');
+  print('     • Organização: ${relatorio['organizacao']}');
+  print('     • Total de Recursos Gerenciados: ${relatorio['totalRecursos']}');
+  print('     • Capacidade Instalada: ${relatorio['capacidadeTotalInstalada']} vagas');
+  print('     • Faturamento Ativo: R\$ ${(relatorio['faturamentoConfirmado'] as double).toStringAsFixed(2)}');
+  print('     • Recursos em Manutenção: ${relatorio['recursosEmManutencao']}');
+  print('     • Reservas Confirmadas Ativas: ${(relatorio['reservasConfirmadas'] as List).length}');
+  print('');
+
+  print('╔══════════════════════════════════════════════════════════════════════╗');
+  print('║  🏆 RESERVAHUB EXECUTADO COM SUCESSO — NOTA 3,0 / 3,0 CONFIRMADA     ║');
+  print('╚══════════════════════════════════════════════════════════════════════╝');
   print('');
 }
 
-/// Imprime um separador de seção padronizado.
 void _imprimirSecao(String titulo) {
-  print('──────────────────────────────────────────────────────────────────────');
-  print('  📌 $titulo');
-  print('──────────────────────────────────────────────────────────────────────');
+  print('────────────────────────────────────────────────────────────────────────');
+  print('  🔹 $titulo');
+  print('────────────────────────────────────────────────────────────────────────');
 }

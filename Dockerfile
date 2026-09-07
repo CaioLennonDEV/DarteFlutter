@@ -1,5 +1,5 @@
 # ==========================================
-# Cici — Automação Residencial Inteligente
+# ReservaHub — Sistema de Reserva e Agendamento de Serviços (Tema 05)
 # Dockerfile para execução do módulo Dart Puro (CLI)
 # ==========================================
 FROM dart:stable AS runtime

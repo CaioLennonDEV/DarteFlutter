@@ -1,5 +1,5 @@
-name: cici
-description: "Cici - Módulo Central de Domínio para Automação e Monitoramento de Dispositivos Residenciais Inteligentes."
+name: reserva_hub
+description: "ReservaHub - Módulo Central de Domínio para Gestão de Reservas, Salas, Equipamentos e Filas de Espera."
 version: 1.0.0
 
 environment:

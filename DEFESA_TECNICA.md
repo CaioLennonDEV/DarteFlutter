@@ -2,7 +2,8 @@
 
 > **Disciplina:** Computação Móvel (2026/2) — Faculdade Multivix  
 > **Professor:** Edgard da Cunha Pontes  
-> **Projeto:** Cici — Automação Residencial Inteligente (Tema 09)  
+> **Projeto:** ReservaHub — Sistema de Reserva e Agendamento de Serviços (Tema 05)  
+> **Vertical:** Gestão de horários, disponibilidade de salas/equipamentos e filas de espera  
 
 Este documento reúne os principais conceitos teóricos e práticos exigidos na **Arguição Técnica Oral**, permitindo que os integrantes do grupo defendam com segurança e profundidade as escolhas arquiteturais implementadas no código-fonte.
 
@@ -34,7 +35,7 @@ Este documento reúne os principais conceitos teóricos e práticos exigidos na 
 ### Por que o operador de exclamação (`!`) deve ser evitado?
 - O operador `!` (*null assertion*) força uma desreferenciação em tempo de execução, dizendo ao compilador: *"Confie em mim, isto não é nulo"*.
 - Se a variável estiver nula, uma exceção em tempo de execução (`Null check operator used on a null value`) é lançada, causando o travamento (*crash*) do app.
-- **Boa prática aplicada no Cici:**
+- **Boas práticas aplicadas no ReservaHub:**
   - Uso de checagens lógicas prévias (`if (variavel != null)`).
   - Operador coalescente de nulo (`??`) para fornecer valor padrão de fallback.
   - Operador de acesso seguro (`?.`).
@@ -45,20 +46,23 @@ Este documento reúne os principais conceitos teóricos e práticos exigidos na 
 
 ## 📌 Tópico 3: Polimorfismo, Herança e Mixins em Dart
 
-### Como o polimorfismo é aplicado no Cici?
-- A classe abstrata `DispositivoInteligente` define o contrato obrigatório:
-  - `void ligar();`
-  - `void desligar();`
-  - `void processarCargaTrabalho(double intensidade);`
+### Como o polimorfismo é aplicado no ReservaHub?
+- A classe abstrata `RecursoAgendavel` define o contrato obrigatório:
+  - `bool validarCompatibilidade(Map<String, dynamic> requisitos);`
+  - `double calcularCustoReserva(Duration duracao);`
+  - `bool estaDisponivel(DateTime inicio, Duration duracao);`
   - `@override String toString();`
-- Todas as subclasses concretas (`Lampada`, `Termostato`, `Sensor`) implementam esses métodos de maneiras distintas de acordo com a regra de negócio.
-- O `GerenciadorCasaInteligente` opera sobre `List<DispositivoInteligente>`, sem precisar saber a classe exata em tempo de compilação, permitindo que uma única chamada como `dispositivo.processarCargaTrabalho(2.0)` ative a regra de negócio correta de cada tipo.
+- Todas as subclasses concretas (`SalaReuniao`, `Equipamento`, `EstacaoTrabalho`) implementam esses métodos de maneiras distintas de acordo com a regra de negócio:
+  - `SalaReuniao`: adiciona taxa extra para videoconferência e checa assentos adicionais.
+  - `Equipamento`: calcula consumo em Watts/kWh e monitora desgaste de uso.
+  - `EstacaoTrabalho`: precifica por tipo de mesa (standing desk) e monitor duplo.
+- O `GerenciadorReservas` opera sobre a lista genérica `List<RecursoAgendavel>`, sem precisar saber a classe exata em tempo de compilação, permitindo que uma única chamada como `recurso.calcularCustoReserva(duracao)` ative a regra polimórfica correta.
 
 ### Por que usar Mixins (`with`) em vez de herança múltipla?
 - O Dart possui herança simples (`extends`), evitando o clássico problema do diamante da herança múltipla em C++.
 - Para reaproveitar comportamentos utilitários transversais entre classes de hierarquias distintas, o Dart utiliza **Mixins** (`with`):
-  - `LogAuditoriaMixin`: Adiciona histórico de auditoria cronológica a qualquer entidade sem acoplar sua árvore de herança.
-  - `MonitoramentoEnergiaMixin`: Provê medição e acumulação de consumo elétrico em kWh para lâmpadas e termostatos, enquanto sensores sem fio não necessitam dessa medição direta da rede.
+  - `LogAuditoriaMixin`: Adiciona histórico de auditoria cronológica com timestamp ISO-8601 a qualquer entidade sem acoplar sua árvore de herança.
+  - `NotificacaoMovelMixin`: Provê capacidade de push notifications móveis tanto para os recursos quanto para o gerenciador.
 
 ---
 
@@ -67,18 +71,17 @@ Este documento reúne os principais conceitos teóricos e práticos exigidos na 
 ### Como funciona o encapsulamento no Dart em comparação ao Java/C#?
 - O Dart **não possui** as palavras-chave `private`, `protected` ou `public`.
 - O encapsulamento é definido exclusivamente ao nível de **biblioteca** (arquivo): qualquer identificador que se inicie com `_` (sublinhado) é privado para aquele arquivo.
-- No Cici, atributos sensíveis como `_nivelBateria`, `_brilho`, `_temperaturaAlvo` e a lista `_dispositivos` são estritamente privados (`_`), garantindo que alterações de estado passem exclusivamente por **Getters e Setters customizados** com regras de validação semântica.
+- No ReservaHub, atributos sensíveis como `_capacidade`, `_emManutencao`, `_agendamentos`, `_historicoReservas` e `_filasEspera` são estritamente privados (`_`), garantindo que alterações de estado passem exclusivamente por **Getters e Setters customizados** com regras de validação semântica (ex.: impedindo capacidade menor ou igual a zero).
 
 ---
 
 ## 📌 Tópico 5: Restrições de Hardware e Recursos Móveis
 
-### Quais restrições móveis o projeto Cici simula e trata?
-1. **Consumo de Bateria e Recursos Críticos:**
-   - Sensores IoT e periféricos móveis operam sob restrições severas de carga.
-   - Quando o nível de bateria cai abaixo de 5%, o sistema suspende o ciclo de telemetria e dispara `RecursoCriticoException`.
-2. **Conectividade Intermitente:**
-   - Ambientes móveis sofrem quedas constantes de sinal (Wi-Fi, Bluetooth BLE, rede celular).
-   - O projeto simula a desconexão de rede (`desconectarRede()`), protegendo as operações com `FalhaConectividadeException`.
-3. **Resiliência com `try-on-catch-finally` e `rethrow`:**
-   - O gerenciador intercepta falhas críticas, registra no log do mixin para telemetria forense e utiliza **`rethrow`** para permitir que a camada cliente (ou futura UI) apresente o feedback adequado ao usuário.
+### Quais restrições móveis o projeto ReservaHub simula e trata?
+1. **Conectividade Intermitente e Instabilidade de Rede Celular:**
+   - Em aplicações móveis, o usuário transita frequentemente por áreas de sombra ou sem sinal (garagens, subsolos, elevadores).
+   - O projeto simula falhas de rede (`sincronizarComServidorNuvem(simularQuedaRede: true)`), lançando `FalhaSincronizacaoMovelException`.
+2. **Resiliência com `try-on-catch-finally` e `rethrow`:**
+   - O serviço central intercepta a falha de conectividade, armazena no log de auditoria para persistência local (estratégia Offline-First), libera recursos no bloco `finally` e dispara **`rethrow`** para que a camada cliente saiba exibir feedback visual amigável ao usuário.
+3. **Gestão Inteligente de Filas de Espera:**
+   - Evita requisições repetitivas de polling que drenariam a bateria do smartphone, utilizando um sistema de fila reativa com promoção automática assim que uma vaga é liberada.

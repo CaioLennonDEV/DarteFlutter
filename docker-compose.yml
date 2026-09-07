@@ -1,7 +1,7 @@
 services:
-  cici:
+  reserva_hub:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: cici_app
+    container_name: reserva_hub_app
     restart: "no"
