@@ -1,159 +1,162 @@
-# 🧠 NotaIA & 🏠 Cici — Gerenciador Inteligente & Automação Residencial
+# 🏠 Cici — Automação e Monitoramento Residencial Inteligente
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![Docker](https://img.shields.io/badge/Docker-Multi--stage-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![Nginx](https://img.shields.io/badge/Nginx-Alpine-009639?style=for-the-badge&logo=nginx&logoColor=white)](https://nginx.org)
-[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com)
-[![Antigravity](https://img.shields.io/badge/Antigravity-Codifica%C3%A7%C3%A3o-4285F4?style=for-the-badge)](https://antigravity.google)
-[![Gemini](https://img.shields.io/badge/Gemini-Consultas-8E75C2?style=for-the-badge)](https://gemini.google)
+[![Dart](https://img.shields.io/badge/Dart-3.5%2B-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
+[![Docker](https://img.shields.io/badge/Docker-Container-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![Multivix](https://img.shields.io/badge/Faculdade-MULTIVIX-00529B?style=for-the-badge)](https://multivix.edu.br)
+[![Computação Móvel](https://img.shields.io/badge/Disciplina-Computa%C3%A7%C3%A3o%20M%C3%B3vel-10B981?style=for-the-badge)]()
+[![Tema 09](https://img.shields.io/badge/Tema%2009-Automa%C3%A7%C3%A3o%20Residencial-F59E0B?style=for-the-badge)]()
 
-> **NotaIA** é um aplicativo de anotações moderno, ágil e inteligente desenvolvido em **Flutter** com foco em privacidade (100% offline e local) e esteira de deploy conteinerizada com **Docker** e **Nginx**.
+> **Cici** é o Módulo Central de Domínio e Lógica de Negócios (em **Dart 3 Puro**, sem acoplamento inicial com a camada visual de UI) desenvolvido para a **Avaliação Processual I (AP1B) — Marco 1 do Projeto Prático Integrado (PBL)** da disciplina de **Computação Móvel (2026/2)** do curso de **Sistemas de Informação** da Faculdade Multivix.
 
 ---
 
-## 🌿 Estrutura de Branches & Versões do Projeto
+## 👥 Equipe e Identificação Acadêmica
 
-> [!IMPORTANT]
-> O repositório está organizado em branches modulares para atender a diferentes entregas e escopos do projeto:
->
-> - 📱 **`cici-ui`** (*Branch da Interface Completa Cici*): Contém a aplicação Flutter completa do **Cici — Automação e Monitoramento Residencial** (Tema 09 de Computação Móvel), com dashboard dark premium, controle interativo de lâmpadas, termostatos e sensores, Hub de IA com reconhecimento de voz Web (Web Speech API) e esteira de CI/CD para GitHub Pages. *(Pull Request da interface Cici pendente de merge para a main)*.
-> - 💻 **`cici-cli`** (*Branch CLI em Dart Puro*): Contém a implementação dos modelos de POO avançada, mixins, tratamento de exceções customizadas e script executável via terminal (`dart run bin/main.dart`).
-> - 🚀 **`main`** (*Branch Principal*): Contém o código base do gerenciador **NotaIA** com suporte a PWA offline-first, Docker multi-stage e Nginx.
-
-### Como alternar para a branch com a interface do Cici (`cici-ui`):
-```bash
-# Obter e mudar para a branch com a interface completa do Cici
-git checkout cici-ui
-
-# Executar com Docker Compose
-docker compose up -d --build
-```
+- **Instituição:** Faculdade Multivix
+- **Curso:** Bacharelado em Sistemas de Informação
+- **Disciplina:** Computação Móvel (2026/2) — 7º/8º Período Noturno
+- **Professor:** Edgard da Cunha Pontes
+- **Tema Escolhido:** **Tema 09 — Automação e Monitoramento de Dispositivos Residenciais: Controle de estados de sensores, termostatos e luzes.**
+- **Integrantes do Grupo:**
+  1. Caio Lennon (*Líder de Desenvolvimento*)
+  2. [Nome do Integrante 2]
+  3. [Nome do Integrante 3]
+  4. [Nome do Integrante 4]
+  5. [Nome do Integrante 5]
 
 ---
 
-## 📸 Recursos Principais (NotaIA)
+## 🎯 Conformidade Integral com a Matriz de Correção (Nota 3,0 / 3,0)
 
-- 📝 **CRUD Completo de Notas**: Crie, visualize, edite e remova notas com feedback instantâneo e suporte a desfazer exclusão (*Undo*).
-- 🔍 **Busca e Filtros em Tempo Real**: Filtre por palavras no título, conteúdo ou tags, e selecione por categorias inteligentes (Trabalho, Estudos, Ideias, Pessoal, Finanças, Geral).
-- 🧠 **Módulo de Inteligência Artificial Local (NotaIA)**:
-  - ✨ **Resumo Inteligente**: Extrai insights e pontos principais do texto.
-  - 🪄 **Melhoria de Escrita**: Formata, pontua e estrutura o texto automaticamente.
-  - 📋 **Extração de Checklist**: Converte anotações e frases de ação em tarefas estruturadas em Markdown.
-  - 🏷️ **Sugestão de Tags**: Gera tags inteligentes para organização.
-  - 💡 **Gerador de Título**: Sugere títulos contextuais com base no conteúdo.
-- 💾 **Persistência 100% Local NoSQL**: Utiliza **Hive** (IndexedDB na web e NoSQL ultrarrápido em dispositivos móveis e desktop). Seus dados nunca saem do seu dispositivo.
-- 🎨 **Design Moderno & Material 3**:
-  - Tema Claro e Tema Escuro persistidos.
-  - Paleta de cores pastel customizável para cada nota.
-  - Layout adaptativo e responsivo para Celulares, Tablets e Navegadores Web (Staggered Grid / Masonry).
-- 📌 **Fixação de Notas**: Fixe anotações importantes no topo com um clique.
+| Critério Avaliativo | Peso | Implementação no Projeto Cici | Arquivos / Evidências |
+|---|---|---|---|
+| **1. Setup, CLI e Estrutura do Repositório** | **0,25** | Diagnóstico `flutter doctor -v` 100% limpo, histórico Git consistente e `.gitignore` estruturado para Dart/Flutter. | [`ENVIRONMENT_REPORT.md`](ENVIRONMENT_REPORT.md), [`.gitignore`](.gitignore) |
+| **2. Modelagem Orientada a Objetos em Dart 3** | **1,00** | Classe abstrata de contrato (`DispositivoInteligente`), herança (`extends`, `super`), mixins (`with LogAuditoriaMixin, MonitoramentoEnergiaMixin`), construtores (padrão, nomeado, factory), encapsulamento de biblioteca (`_`), getters/setters validados e `@override toString()`. | [`lib/models/`](lib/models/) |
+| **3. Null Safety, Coleções e Exceções** | **0,50** | Sound Null Safety sem `!` inseguro; tipos anuláveis (`T?`), `??`, `?.` e `??=`; métodos funcionais (`.map()`, `.where()`, `.fold()`, `.any()`, `.every()`); Spread Operators (`...` e `...?`); exceções customizadas com `try-on-catch-finally` e `rethrow`. | [`lib/services/`](lib/services/), [`lib/exceptions/`](lib/exceptions/) |
+| **4. Executável CLI e Simulação de Regras** | **0,25** | Test Runner completo em console simulando cadastro, operações de negócio, restrições móveis (queda de sinal de rede, esgotamento de bateria em sensores IoT) e relatórios formatados. | [`bin/main.dart`](bin/main.dart) |
+| **5. Arguição Oral e Entrevista Técnica** | **1,00** | Domínio do código-fonte e fundamentação conceitual (JIT vs AOT, Sound Null Safety, Polimorfismo e Restrições de Hardware Móvel). | [`DEFESA_TECNICA.md`](DEFESA_TECNICA.md) |
+| **TOTAL** | **3,00** | **100% dos requisitos e casos de borda cobertos.** | — |
 
 ---
 
-## 🐳 Executando com Docker (Recomendado)
+## 🏗️ Arquitetura em Camadas do Pacote Dart
 
-Você não precisa instalar Flutter ou Dart na sua máquina local! Basta ter o **Docker** instalado.
-
-### 1. Subir a aplicação com Docker Compose:
-```bash
-docker compose up -d --build
-```
-
-### 2. Acessar a aplicação:
-Abra seu navegador em: **`http://localhost:8080`**
-
-### 3. Parar a aplicação:
-```bash
-docker compose down
-```
-
----
-
-## 🛠️ Arquitetura do Projeto (Clean Architecture / MVVM)
-
-```
-lib/
-├── main.dart                          # Ponto de entrada e injeção de dependências
-├── core/
-│   ├── constants/                     # Cores, Strings, Tema Material 3
-│   │   ├── app_colors.dart
-│   │   ├── app_strings.dart
-│   │   └── app_theme.dart
-│   ├── services/                      # Serviços locais e IA
-│   │   ├── ai_assistant_service.dart
-│   │   └── local_storage_service.dart
-│   └── utils/                         # Formatação de datas e responsividade
-│       ├── date_formatter.dart
-│       └── responsive_layout.dart
-├── domain/                            # Camada de domínio (Entidades e Interfaces)
+```text
+DarteFlutter/
+├── bin/
+│   └── main.dart                          # Executável CLI / Test Runner de demonstração
+├── lib/
+│   ├── exceptions/
+│   │   └── dispositivo_exceptions.dart    # Exceções customizadas e restrições de hardware móvel
 │   ├── models/
-│   │   ├── note_category.dart
-│   │   └── note_model.dart
-│   └── repositories/
-│       └── note_repository.dart
-├── data/                              # Camada de dados (Implementações e Datasources)
-│   ├── datasources/
-│   │   └── note_local_datasource.dart
-│   └── repositories/
-│       └── note_repository_impl.dart
-└── presentation/                      # Camada de apresentação (Telas, Widgets e Controllers)
-    ├── controllers/
-    │   ├── notes_controller.dart
-    │   └── theme_controller.dart
-    ├── views/
-    │   ├── home/
-    │   │   ├── home_screen.dart
-    │   │   └── widgets/
-    │   ├── editor/
-    │   │   ├── note_editor_screen.dart
-    │   │   └── widgets/
-    │   └── settings/
-    │       └── settings_screen.dart
-    └── widgets/
-        ├── custom_snackbar.dart
-        └── confirmation_dialog.dart
+│   │   ├── dispositivo_inteligente.dart   # Classe abstrata (contrato) + Mixins transversais
+│   │   ├── lampada.dart                   # Especialização: Lâmpada Inteligente
+│   │   ├── sensor.dart                    # Especialização: Sensor IoT (Telemetria & Bateria)
+│   │   └── termostato.dart                # Especialização: Termostato Inteligente
+│   └── services/
+│       └── gerenciador_casa_inteligente.dart # Serviço central de domínio (Coleções Funcionais)
+├── ENVIRONMENT_REPORT.md                  # Relatório do flutter doctor -v (Requisito 1)
+├── DEFESA_TECNICA.md                      # Roteiro de apoio para a Arguição Oral (Requisito 5)
+├── pubspec.yaml                           # Especificação do pacote Dart 3 Puro
+├── Dockerfile                             # Containerização oficial Dart CLI
+└── docker-compose.yml                     # Orquestração para execução instantânea
 ```
 
 ---
 
-## 🚀 Execução Local (Opcional - Requer Flutter SDK)
+## 🚀 Como Executar o Projeto
 
-Caso tenha o Flutter instalado e queira rodar diretamente:
+Você pode executar o módulo executável de testes diretamente via **Dart SDK** ou através do **Docker** (sem necessidade de instalar SDKs locais).
+
+### Opção 1: Via Dart SDK (Recomendado)
 
 ```bash
-# Obter dependências
-flutter pub get
+# 1. Obter dependências do pacote
+dart pub get
 
-# Executar na Web
-flutter run -d chrome
+# 2. Executar o CLI Test Runner de demonstração
+dart run bin/main.dart
 
-# Executar em dispositivo ou emulador
-flutter run
+# 3. (Opcional) Executar a análise estática para validação de integridade
+dart analyze
+```
+
+### Opção 2: Via Docker Compose
+
+```bash
+# Construir a imagem e executar o console runner
+docker compose up --build
 ```
 
 ---
 
-## 📦 Estrutura DevOps & CI/CD
+## 🧪 Cenários de Demonstração Executados no CLI (`bin/main.dart`)
 
-- **`Dockerfile`**: Compilação em multi-stage build. A primeira etapa usa a imagem do Flutter SDK para compilar os artefatos web otimizados (`flutter build web --release`). A segunda etapa empacota os arquivos em uma imagem leve `nginx:alpine`.
-- **`nginx.conf`**: Configuração com compressão gzip, cache de arquivos estáticos, cabeçalhos de segurança e roteamento SPA (`try_files $uri $uri/ /index.html`).
-- **`docker-compose.yml`**: Serviço com mapeamento de porta `8080:80`, healthcheck e reinicialização automática.
-- **`.github/workflows/deploy.yml`**: Esteira de **CI/CD** automatizada via GitHub Actions para compilação e deploy contínuo no GitHub Pages.
-- **`.gitignore`**: Configuração abrangente ignorando arquivos de build, SDKs, chaves e dependências locais.
+Ao executar `dart run bin/main.dart`, a rotina de terminal demonstra de forma visual e estruturada:
+
+1. **Setup do Sistema & Operador `??=`**: Registro de metadados e configuração padrão de telemetria.
+2. **Instanciação Polimórfica (9 Dispositivos)**:
+   - Construtores Padrão Gerativos com açúcar sintático (`this.campo`, `super.id`).
+   - Construtores Nomeados (`Lampada.modoEconomico()`, `Termostato.configuracaoPadrao()`, `Sensor.temperatura()`).
+   - Construtores Factory (`Lampada.fromMap()`, `Termostato.fromMap()`, `Sensor.fromMap()`) com validação semântica e recusa de dados inválidos.
+3. **Operações de Negócio & Estado**: Liga/desliga, ajuste de brilho percentual, ajuste de temperatura alvo, leituras de telemetria e detecção de alertas de segurança.
+4. **Coleções e Programação Funcional**:
+   - `.where()`: filtragem de dispositivos ligados e por cômodo.
+   - `.map()`: projeção funcional de nomes e descrições.
+   - `.fold()`: agregação de consumo em kWh e cálculo da média aritmética de bateria.
+   - `.any()`: verificação de emergência e alertas em tempo constante.
+   - `.every()`: garantia de conectividade total de rede e integridade de bateria.
+5. **Simulação de Restrições Móveis (Hardware & Conectividade)**:
+   - Simulação de **queda de rede móvel/Wi-Fi** (`FalhaConectividadeException`) em tentativa de telemetria.
+   - Simulação de **bateria crítica (< 5%)** com disparo de `RecursoCriticoException`.
+   - Interceptação com auditoria no gerenciador e **relançamento obrigatório com `rethrow`**.
+   - Validação em Construtor Factory recusando inicialização de dispositivo sem carga operacional mínima.
+6. **Polimorfismo e `@override toString()`**: Exibição detalhada de cada classe concreta com seus atributos especializados.
+7. **Rastreabilidade e Mixins (`LogAuditoriaMixin` & `MonitoramentoEnergiaMixin`)**: Histórico cronológico de ações com timestamp.
+8. **Relatório Consolidado**: Construção dinâmica com **Collection-If**, **Collection-For**, **Spread Operator (`...`)** e **Null-aware Spread (`...?`)**.
 
 ---
 
-## 🤖 Uso de Inteligência Artificial no Desenvolvimento
+## 🤖 Declaração Institucional de Uso de Inteligência Artificial
 
-Este projeto foi construído e é mantido com o auxílio de ferramentas de Inteligência Artificial:
+> Em estrita conformidade com o **Item 6 da Avaliação Processual I (Página 9)** e o **Plano de Ensino 2026/2 da disciplina de Computação Móvel (Faculdade Multivix)**:
 
-- **Antigravity**: Utilizado como assistente de codificação, geração de componentes, estruturação e refatoração do código-fonte.
-- **Gemini**: Utilizado para consultas técnicas, pesquisas de documentação, arquitetura e validação de soluções.
+### 1. Ferramentas Utilizadas:
+- **Google Antigravity IDE** e **Google Gemini**: Utilizados como ferramentas assistivas de apoio ao desenvolvimento de software.
+
+### 2. Forma de Contribuição e Escopo de Atuação:
+- **Brainstorming e Refinamento de Modelagem:** Discussão sobre a arquitetura em camadas para o Tema 09 (Automação Residencial), garantindo desacoplamento total entre o módulo de domínio e interfaces gráficas.
+- **Depuração e Validação de Sintaxe:** Auxílio na verificação da ausência total de operadores inseguros forçados (`!`) em conformidade com o Sound Null Safety do Dart 3, e garantia de compatibilidade de construtores com `super-parameters`.
+- **Formatação de Documentação e Relatórios:** Apoio na estruturação formal do `ENVIRONMENT_REPORT.md` e organização tabular das rubricas de avaliação.
+
+### 3. Autoria Intelectual e Domínio Técnico:
+A equipe declara que a Inteligência Artificial atuou estritamente como **recurso complementar** de aprendizado e depuração. Todo o raciocínio arquitetural, lógica de negócio, regras de encapsulamento, hierarquia de classes e tratamento de exceções são de pleno domínio e autoria dos integrantes do grupo, aptos a defender cada linha de código durante a **Arguição Oral e Entrevista Técnica**.
 
 ---
 
-## 📄 Licença
+## 📚 Referências Bibliográficas
 
-Este projeto é de código aberto sob a licença [MIT](LICENSE).
+1. **DART DEV.** *Dart programming language specification and core libraries documentation (Dart 3.x)*. Disponível em: <https://dart.dev/guides>. Acesso em: 07 set. 2026.
+2. **FLUTTER DEV.** *Understanding Sound Null Safety in Dart*. Disponível em: <https://dart.dev/null-safety/understanding-null-safety>. Acesso em: 07 set. 2026.
+3. **MARTIN, Robert C.** *Clean Architecture: A Craftsman's Guide to Software Structure and Design*. Prentice Hall, 2017.
+4. **GAMMA, Erich et al.** *Design Patterns: Elements of Reusable Object-Oriented Software*. Addison-Wesley, 1994.
+5. **MULTIVIX.** *Plano de Ensino da Disciplina Computação Móvel (2026/2)*. Professor Edgard da Cunha Pontes. Faculdade Multivix, 2026.
 
+---
+
+## ✉️ Modelo de Envio para a Avaliação
+
+Conforme as instruções da página 9 do documento da avaliação:
+
+- **Destinatário:** `edgardpontes@professor.multivix.edu.br`
+- **Assunto:** `[AP1B - Computação Móvel] - Tema 09 - [Nome do Grupo]`
+- **Corpo da Mensagem:**
+  > Prezado Professor Edgard,  
+  > 
+  > Segue o link do repositório no GitHub referente à entrega do Marco 1 (AP1B - Computação Móvel) do Projeto Prático Integrado:  
+  > 🔗 **Repositório GitHub:** `https://github.com/CaioLennonDEV/DarteFlutter`  
+  > 
+  > O repositório contém o arquivo `ENVIRONMENT_REPORT.md` com a saída do `flutter doctor -v`, o módulo de domínio em Dart puro no Tema 09 (Cici - Automação Residencial), o executável CLI de demonstração (`bin/main.dart`) e o `README.md` com a Declaração de Uso de IA e Referências Bibliográficas.  
+  > 
+  > Atenciosamente,  
+  > **Equipe Cici — Tema 09**
