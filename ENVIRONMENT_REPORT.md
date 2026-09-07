@@ -4,6 +4,8 @@
 > **Curso:** Bacharelado em Sistemas de Informação  
 > **Disciplina:** Computação Móvel (2026/2) — 7º/8º Período Noturno  
 > **Professor:** Edgard da Cunha Pontes  
+> **Projeto:** ReservaHub — Sistema de Reserva e Agendamento de Serviços  
+> **Tema Escolhido:** Tema 05 — Gestão de horários, disponibilidade de salas/equipamentos e filas de espera  
 > **Atividade:** Avaliação Processual I (AP1B) — Marco 1 (PBL)  
 > **Requisito Avaliado:** Requisito 1 — Setup e Diagnóstico do Ambiente (0,25 ponto)  
 > **Data de Emissão:** 07 de Setembro de 2026  
