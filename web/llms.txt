@@ -5,7 +5,7 @@
 ## Documentação e Links
 
 - [Início](http://localhost:8080/): Interface principal do aplicativo com listagem de notas em formato de grade ou lista, filtros por categorias e busca em tempo real.
-- [Repositório](https://github.com/CaioLennonDEV/DarteFlutter): Código-fonte e arquitetura do projeto desenvolvido em Flutter Web com suporte a Docker e Nginx.
+- [Repositório](https://github.com/CaioLennonDEV/cici-smart-home): Código-fonte e arquitetura do projeto desenvolvido em Flutter Web com suporte a Docker e Nginx.
 
 ## Recursos Principais
 

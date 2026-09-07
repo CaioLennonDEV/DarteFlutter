@@ -42,7 +42,7 @@
 ## 🏗️ Arquitetura em Camadas do Pacote Dart
 
 ```text
-DarteFlutter/
+cici-smart-home/
 ├── bin/
 │   └── main.dart                          # Executável CLI / Test Runner de demonstração
 ├── lib/
@@ -154,7 +154,7 @@ Conforme as instruções da página 9 do documento da avaliação:
   > Prezado Professor Edgard,  
   > 
   > Segue o link do repositório no GitHub referente à entrega do Marco 1 (AP1B - Computação Móvel) do Projeto Prático Integrado:  
-  > 🔗 **Repositório GitHub:** `https://github.com/CaioLennonDEV/DarteFlutter`  
+  > 🔗 **Repositório GitHub:** `https://github.com/CaioLennonDEV/cici-smart-home`  
   > 
   > O repositório contém o arquivo `ENVIRONMENT_REPORT.md` com a saída do `flutter doctor -v`, o módulo de domínio em Dart puro no Tema 09 (Cici - Automação Residencial), o executável CLI de demonstração (`bin/main.dart`) e o `README.md` com a Declaração de Uso de IA e Referências Bibliográficas.  
   > 
