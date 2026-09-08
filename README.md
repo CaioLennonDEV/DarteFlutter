@@ -85,8 +85,9 @@ ETAPA 06 | Processamento Funcional de Dados -> Agregações (.fold), projeções
 ETAPA 07 | Composição Dinâmica de Dados      -> Consolidação de catálogos com Spread Operators (... / ...?)
 ETAPA 08 | Resiliência Offline/Conexão      -> Simulação de queda de rede com rethrow e auditoria
 ETAPA 09 | Emissão de Relatório Dinâmico    -> Montagem estruturada com Collection-If e Collection-For
--------------------------------------------------------------------------------------------------```
+-------------------------------------------------------------------------------------------------
 RESULTADO: Suíte executada com 100% de conformidade com as regras de negócio.
+```
 
 Integrantes
 | Nome | E-mail |
