@@ -58,7 +58,7 @@ reserva-hub/
 ├── DEFESA_TECNICA.md                 # Documento de aprofundamento arquitetural
 ├── ENVIRONMENT_REPORT.md             # Validação estática de ambiente
 └── pubspec.yaml                      # Configuração do pacote Dart 3 Puro
-
+```
 Execução e Validação do CLI
 Opção 1: Dart SDK Local
 # Baixar dependências
