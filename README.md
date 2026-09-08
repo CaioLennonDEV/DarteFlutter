@@ -103,7 +103,6 @@ RESULTADO: Suíte executada com 100% de conformidade com as regras de negócio.
 
 ### Declaração de Uso de IA
 
-> Em conformidade com o Item 6 da Avaliação Processual I e o Plano de Ensino da disciplina:
 * **Ferramentas:** Google Antigravity IDE e Google Gemini.
 * **Finalidade:** Apoio consultivo no refinamento do diagrama de classes, verificação estática para prevenção do operador `!` em conformidade com Sound Null Safety e padronização visual da documentação técnica.
 * **Autoria:** O design de software, escrita das classes de domínio, regras de negócio e o desenvolvimento do CLI são de autoria e domínio técnico integral dos integrantes da equipe.
