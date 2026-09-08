@@ -75,7 +75,7 @@ docker compose up --build
 
 Cenários de Teste Cobertos no Console (bin/main.dart)
 [EXECUÇÃO DOS CENÁRIOS DO DOMÍNIO]
--------------------------------------------------------------------------------------------------
+```-------------------------------------------------------------------------------------------------
 ETAPA 01 | Setup Global de Parâmetros       -> Políticas padrão aplicadas com operador ??=
 ETAPA 02 | Instanciação Polimórfica          -> Carga de recursos via Padrão, Nomeados e Factory
 ETAPA 03 | Operações de Reserva             -> Cálculo de tarifas dinâmicas por categoria
@@ -85,7 +85,7 @@ ETAPA 06 | Processamento Funcional de Dados -> Agregações (.fold), projeções
 ETAPA 07 | Composição Dinâmica de Dados      -> Consolidação de catálogos com Spread Operators (... / ...?)
 ETAPA 08 | Resiliência Offline/Conexão      -> Simulação de queda de rede com rethrow e auditoria
 ETAPA 09 | Emissão de Relatório Dinâmico    -> Montagem estruturada com Collection-If e Collection-For
--------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------```
 RESULTADO: Suíte executada com 100% de conformidade com as regras de negócio.
 
 Integrantes
