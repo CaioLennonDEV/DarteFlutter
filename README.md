@@ -94,14 +94,6 @@ RESULTADO: Suíte executada com 100% de conformidade com as regras de negócio.
 ---
 
 ### Informações do Projeto
-
-| Contexto | Detalhes |
-|---|---|
-| **Instituição** | Faculdade Multivix |
-| **Curso** | Bacharelado em Sistemas de Informação |
-| **Disciplina** | Computação Móvel (2026/2) — Prof. Edgard da Cunha Pontes |
-| **Avaliação** | AP1B — Marco 1 do Projeto Prático Integrado (Tema 05) |
-
 **Equipe:**
 * Caio Lennon — [caiolennon09@gmail.com](mailto:caiolennon09@gmail.com)
 * Júlia Vionette Guimarães — [jujuvionette@gmail.com](mailto:jujuvionette@gmail.com)
